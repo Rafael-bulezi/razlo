@@ -1,0 +1,1 @@
+- [GitHub public repository discovery](github-public-repo-discovery.md) — use GitHub search to resolve public repo names before requiring authorization.
