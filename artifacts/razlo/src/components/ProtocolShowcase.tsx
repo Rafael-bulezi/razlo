@@ -3,6 +3,40 @@ import { motion } from 'motion/react';
 import Button from './ui/razlo-button';
 import { ArrowRight } from 'lucide-react';
 
+const DESKTOP_WAYPOINTS = [
+  { x: 168, y: 90 },
+  { x: 1148, y: 306 },
+  { x: 252, y: 558 },
+  { x: 1176, y: 756 },
+] as const;
+
+const MOBILE_WAYPOINTS = [
+  { x: 22, y: 8 },
+  { x: 80, y: 32 },
+  { x: 22, y: 58 },
+  { x: 80, y: 82 },
+] as const;
+
+function findRouteProgress(route: SVGPathElement, target: { x: number; y: number }) {
+  const length = route.getTotalLength();
+  let closest = 0;
+  let closestDistance = Number.POSITIVE_INFINITY;
+
+  for (let sample = 0; sample <= 100; sample += 1) {
+    const distance = (sample / 100) * length;
+    const point = route.getPointAtLength(distance);
+    const deltaX = point.x - target.x;
+    const deltaY = point.y - target.y;
+    const distanceToTarget = deltaX * deltaX + deltaY * deltaY;
+    if (distanceToTarget < closestDistance) {
+      closestDistance = distanceToTarget;
+      closest = sample / 100;
+    }
+  }
+
+  return closest;
+}
+
 const STEPS = [
   {
     number: '01',
@@ -34,8 +68,11 @@ const ProtocolShowcase = () => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const desktopRouteRef = useRef<SVGPathElement>(null);
   const mobileRouteRef = useRef<SVGPathElement>(null);
+  const progressRef = useRef(0);
+  const layoutKeyRef = useRef('');
   const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [activationPoints, setActivationPoints] = useState([0.02, 0.34, 0.66, 0.93]);
   const [routeState, setRouteState] = useState({
     length: 0,
     dot: { x: 168, y: 90 },
@@ -43,56 +80,72 @@ const ProtocolShowcase = () => {
 
   useEffect(() => {
     const mobileQuery = window.matchMedia('(max-width: 820px)');
-    const updateMobile = () => setIsMobile(mobileQuery.matches);
-    const measure = () => {
-      const desktopLength = desktopRouteRef.current?.getTotalLength() ?? 0;
-      const mobileLength = mobileRouteRef.current?.getTotalLength() ?? 0;
-      const activeRoute = mobileQuery.matches ? mobileRouteRef.current : desktopRouteRef.current;
-      const length = mobileQuery.matches ? mobileLength : desktopLength;
-      if (activeRoute && length) {
-        const point = activeRoute.getPointAtLength(progress * length);
-        setRouteState({ length, dot: { x: point.x, y: point.y } });
-      }
-    };
     let frame = 0;
-    const update = () => {
+
+    const measureLayout = () => {
+      const route = mobileQuery.matches ? mobileRouteRef.current : desktopRouteRef.current;
+      if (!route) return;
+
+      const layoutKey = `${mobileQuery.matches ? 'mobile' : 'desktop'}:${window.innerWidth}x${window.innerHeight}`;
+      if (layoutKeyRef.current === layoutKey) return;
+      layoutKeyRef.current = layoutKey;
+
+      const length = route.getTotalLength();
+      const targets = mobileQuery.matches ? MOBILE_WAYPOINTS : DESKTOP_WAYPOINTS;
+      setActivationPoints(
+        targets.map((target) => Math.max(0.02, findRouteProgress(route, target)))
+      );
+      setRouteState((current) => ({ length, dot: current.dot }));
+    };
+
+    const updateDot = () => {
+      const route = mobileQuery.matches ? mobileRouteRef.current : desktopRouteRef.current;
+      if (!route) return;
+
+      const length = route.getTotalLength();
+      const point = route.getPointAtLength(progressRef.current * length);
+      setRouteState({ length, dot: { x: point.x, y: point.y } });
+    };
+
+    const render = () => {
       const wrap = wrapRef.current;
-      if (wrap) {
-        const top = wrap.getBoundingClientRect().top + window.scrollY;
-        const total = Math.max(1, wrap.offsetHeight - window.innerHeight);
-        const next = Math.max(0, Math.min(1, (window.scrollY - top) / total));
-        setProgress(next);
-      }
+      const total = wrap ? Math.max(1, wrap.offsetHeight - window.innerHeight) : 1;
+      const next = wrap
+        ? Math.max(0, Math.min(1, -wrap.getBoundingClientRect().top / total))
+        : 0;
+
+      progressRef.current = next;
+      setProgress(next);
+      measureLayout();
+      updateDot();
       frame = 0;
     };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
+
+    const requestRender = () => {
+      if (!frame) frame = requestAnimationFrame(render);
     };
+
+    const updateMobile = () => {
+      setIsMobile(mobileQuery.matches);
+      requestRender();
+    };
+
     updateMobile();
-    measure();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', measure);
+    render();
+    window.addEventListener('scroll', requestRender, { passive: true });
+    window.addEventListener('resize', requestRender);
     mobileQuery.addEventListener('change', updateMobile);
-    mobileQuery.addEventListener('change', measure);
+
     return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', measure);
+      window.removeEventListener('scroll', requestRender);
+      window.removeEventListener('resize', requestRender);
       mobileQuery.removeEventListener('change', updateMobile);
-      mobileQuery.removeEventListener('change', measure);
       if (frame) cancelAnimationFrame(frame);
     };
-  }, [progress]);
-
-  useEffect(() => {
-    const activeRoute = isMobile ? mobileRouteRef.current : desktopRouteRef.current;
-    if (!activeRoute) return;
-    const length = activeRoute.getTotalLength();
-    const point = activeRoute.getPointAtLength(progress * length);
-    setRouteState({ length, dot: { x: point.x, y: point.y } });
-  }, [isMobile, progress]);
+  }, []);
 
   const activeStep = STEPS.reduce((current, _, index) => {
-    return progress >= [0.02, 0.34, 0.66, 0.93][index] ? index : current;
+    return progress >= activationPoints[index] ? index : current;
   }, -1);
 
   return (
