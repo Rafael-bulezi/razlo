@@ -1,6 +1,6 @@
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
-import Expertise from '../components/Expertise';
+import Values from '../components/Values';
 import Projects from '../components/Projects';
 import ProtocolShowcase from '../components/ProtocolShowcase';
 import Footer from '../components/Footer';
@@ -17,9 +17,9 @@ const Home = () => {
     <>
       <Navbar />
       <div className="dark"><Hero /></div>
-      <SeamReveal><Expertise /></SeamReveal>
+      <SeamReveal><Values /></SeamReveal>
       <div className="dark"><Projects /></div>
-      <ProtocolShowcase />
+      <div className="dark"><ProtocolShowcase /></div>
       <Footer />
     </>
   );

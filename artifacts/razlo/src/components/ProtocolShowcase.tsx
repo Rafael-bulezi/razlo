@@ -1,97 +1,153 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { motion } from 'motion/react';
 import Button from './ui/razlo-button';
-import { cn } from '../lib/utils';
+import { ArrowRight } from 'lucide-react';
 
 const STEPS = [
   {
     number: '01',
-    title: 'Discovery',
-    description:
-      'We start with a deep-dive into your brand, goals, and competitive landscape. No templates — every engagement begins from first principles.',
+    label: 'Discovery',
+    title: <>We start by <em>listening.</em></>,
+    duration: '2–3 wks',
   },
   {
     number: '02',
-    title: 'Strategy',
-    description:
-      'A bespoke roadmap that connects your business objectives to creative and technical execution. We define success metrics before we write a single line of code.',
+    label: 'Strategy',
+    title: <>Then we draw <em>the map.</em></>,
+    duration: '1–2 wks',
   },
   {
     number: '03',
-    title: 'Execution',
-    description:
-      'Our team builds with precision — iterative delivery, regular check-ins, and a relentless focus on craft at every layer of the stack.',
+    label: 'Execution',
+    title: <>We build <em>with care.</em></>,
+    duration: '8–12 wks',
   },
   {
     number: '04',
-    title: 'Launch & Growth',
-    description:
-      'We ship, monitor, and optimize. Our work doesn\'t end at launch — we\'re partners in long-term digital growth.',
+    label: 'Launch & Growth',
+    title: <>And we <em>stay.</em></>,
+    duration: 'ongoing',
   },
 ];
 
 const ProtocolShowcase = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] });
-  const titleY = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const desktopRouteRef = useRef<SVGPathElement>(null);
+  const mobileRouteRef = useRef<SVGPathElement>(null);
+  const [progress, setProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [routeState, setRouteState] = useState({
+    length: 0,
+    dot: { x: 168, y: 90 },
+  });
+
+  useEffect(() => {
+    const mobileQuery = window.matchMedia('(max-width: 820px)');
+    const updateMobile = () => setIsMobile(mobileQuery.matches);
+    const measure = () => {
+      const desktopLength = desktopRouteRef.current?.getTotalLength() ?? 0;
+      const mobileLength = mobileRouteRef.current?.getTotalLength() ?? 0;
+      const activeRoute = mobileQuery.matches ? mobileRouteRef.current : desktopRouteRef.current;
+      const length = mobileQuery.matches ? mobileLength : desktopLength;
+      if (activeRoute && length) {
+        const point = activeRoute.getPointAtLength(progress * length);
+        setRouteState({ length, dot: { x: point.x, y: point.y } });
+      }
+    };
+    let frame = 0;
+    const update = () => {
+      const wrap = wrapRef.current;
+      if (wrap) {
+        const top = wrap.getBoundingClientRect().top + window.scrollY;
+        const total = Math.max(1, wrap.offsetHeight - window.innerHeight);
+        const next = Math.max(0, Math.min(1, (window.scrollY - top) / total));
+        setProgress(next);
+      }
+      frame = 0;
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    updateMobile();
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', measure);
+    mobileQuery.addEventListener('change', updateMobile);
+    mobileQuery.addEventListener('change', measure);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', measure);
+      mobileQuery.removeEventListener('change', updateMobile);
+      mobileQuery.removeEventListener('change', measure);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [progress]);
+
+  useEffect(() => {
+    const activeRoute = isMobile ? mobileRouteRef.current : desktopRouteRef.current;
+    if (!activeRoute) return;
+    const length = activeRoute.getTotalLength();
+    const point = activeRoute.getPointAtLength(progress * length);
+    setRouteState({ length, dot: { x: point.x, y: point.y } });
+  }, [isMobile, progress]);
+
+  const activeStep = STEPS.reduce((current, _, index) => {
+    return progress >= [0.02, 0.34, 0.66, 0.93][index] ? index : current;
+  }, -1);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative overflow-hidden bg-[#EAE6DE] px-5 py-32 text-black md:px-12 md:py-48 lg:px-20 dark:bg-noir-lowest dark:text-white"
-    >
-      <div className="pointer-events-none absolute -right-24 top-20 h-72 w-72 rounded-full bg-[#B15D2E]/10 blur-[100px] dark:bg-[#B15D2E]/20" />
-      <div className="relative mx-auto max-w-[1500px]">
-        <div className="mb-24 flex flex-col justify-between gap-10 md:flex-row md:items-end">
+    <div ref={wrapRef} className="razlo-protocol-wrap">
+      <section className="razlo-protocol-stage relative flex h-svh max-w-[1500px] flex-col overflow-hidden bg-[#0E0E0E] px-5 pt-8 text-white sm:px-8 md:px-12 lg:mx-auto lg:px-20">
+        <div className="flex items-start justify-between gap-5">
           <div>
-            <p className="razlo-kicker mb-6">How the work moves</p>
-            <motion.h2 style={{ y: titleY }} className="font-serif text-[clamp(4rem,8vw,8rem)] leading-[0.85] tracking-[-0.04em]">
-              THE<br /><em className="text-[#B15D2E] dark:text-[#FFB692]">PROTOCOL.</em>
-            </motion.h2>
+            <p className="razlo-kicker text-[#FFB692]">Razlo.digital / The protocol</p>
+            <h2 className="mt-4 font-serif text-[clamp(2.5rem,5vw,4.4rem)] leading-[0.88] tracking-[-0.04em]">
+              How the work<br /><em className="text-[#FFB692]">moves.</em>
+            </h2>
           </div>
-          <div className="md:pb-2">
-            <p className="max-w-md text-sm leading-relaxed text-black/60 dark:text-white/60 mb-8">
-              No mystery handoffs or bloated process. Just a clear sequence that lets the idea get sharper at every stage.
-            </p>
-            <Button variant="secondary" size="md" to="/protocol" className="border-black/20 dark:border-white/20">
-              See all five phases <ArrowRight size={14} />
-            </Button>
-          </div>
+          <Button variant="secondary" size="sm" to="/protocol" className="mt-0 shrink-0 border-white/20 text-white">
+            Full protocol <ArrowRight size={13} />
+          </Button>
         </div>
 
-        <div className="flex flex-col border-t border-black/10 dark:border-white/10">
+        <div className="relative min-h-0 flex-1">
+          <div className="razlo-protocol-ambient" aria-hidden="true" />
+          <div className="protocol-glass-bubble protocol-gb-1" aria-hidden="true" />
+          <div className="protocol-glass-bubble protocol-gb-2" aria-hidden="true" />
+          <div className="protocol-glass-bubble protocol-gb-3" aria-hidden="true" />
+          <div className="protocol-glass-bubble protocol-gb-4" aria-hidden="true" />
+          <div className="protocol-glass-bubble protocol-gb-5" aria-hidden="true" />
+
+          <svg className="protocol-route protocol-route-desktop" viewBox="0 0 1400 900" preserveAspectRatio="none" aria-hidden="true">
+            <path className="protocol-track" d="M 168 90 C 520 120 860 210 1148 306 C 900 410 560 460 252 558 C 560 650 900 690 1176 756" />
+            <path ref={desktopRouteRef} className="protocol-route-line" strokeDasharray={routeState.length || undefined} strokeDashoffset={(routeState.length || 0) * (1 - progress)} d="M 168 90 C 520 120 860 210 1148 306 C 900 410 560 460 252 558 C 560 650 900 690 1176 756" />
+            <circle className="protocol-ink-drop" cx={routeState.dot.x} cy={routeState.dot.y} r="7" />
+          </svg>
+          <svg className="protocol-route protocol-route-mobile" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <path className="protocol-track" d="M 22 8 C 55 14 80 20 80 32 C 80 44 22 46 22 58 C 22 70 55 74 80 82" />
+            <path ref={mobileRouteRef} className="protocol-route-line" strokeDasharray={routeState.length || undefined} strokeDashoffset={(routeState.length || 0) * (1 - progress)} d="M 22 8 C 55 14 80 20 80 32 C 80 44 22 46 22 58 C 22 70 55 74 80 82" />
+            <circle className="protocol-ink-drop" cx={routeState.dot.x} cy={routeState.dot.y} r="1.8" />
+          </svg>
+
           {STEPS.map((step, index) => (
-            <motion.article
-              key={step.number}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className={cn(
-                "group relative grid gap-8 py-12 md:py-20 lg:grid-cols-[0.3fr_1fr_0.8fr] xl:grid-cols-[0.25fr_1.1fr_0.75fr] border-b border-black/10 dark:border-white/10 items-start",
-                "hover:bg-black/5 dark:hover:bg-white/[0.02] transition-colors -mx-5 px-5 md:-mx-12 md:px-12 lg:-mx-20 lg:px-20"
-              )}
-            >
-              <div className="flex items-center text-[10px] font-bold tracking-[0.25em] text-[#B15D2E] dark:text-[#FFB692]">
-                PHASE {step.number}
+            <div key={step.number}>
+              <div className={`protocol-waypoint protocol-w-${index + 1} ${activeStep >= index ? 'is-lit' : ''}`}>
+                <span>{step.number}</span>
               </div>
-
-              <h3 className="font-serif text-4xl md:text-5xl leading-none text-black dark:text-white tracking-tight">
-                {step.title}
-              </h3>
-
-              <div className="flex flex-col gap-6 lg:ml-auto max-w-md">
-                <p className="text-sm md:text-base leading-relaxed text-black/60 dark:text-white/60">
-                  {step.description}
-                </p>
-                <div className="h-px w-12 bg-black/10 dark:bg-white/10 group-hover:w-full group-hover:bg-[#B15D2E] dark:group-hover:bg-[#FFB692] transition-all duration-700 ease-[0.16,1,0.3,1]" />
-              </div>
-            </motion.article>
+              <article className={`protocol-phase protocol-p-${index + 1} ${activeStep >= index ? 'is-lit' : ''}`}>
+                <p className="protocol-phase-kicker">{step.number} · {step.label}</p>
+                <h3>{step.title}</h3>
+                <span className="protocol-pill">{step.duration}</span>
+              </article>
+            </div>
           ))}
         </div>
-      </div>
-    </section>
+        <div className="flex items-center justify-between border-t border-white/10 py-5 text-[10px] font-bold uppercase tracking-[0.25em] text-white/40">
+          <span>Scroll to move through the protocol</span>
+          <span>04 phases · Luanda</span>
+        </div>
+      </section>
+    </div>
   );
 };
 
