@@ -431,6 +431,12 @@ html.lenis, html.lenis body {
 
 .razlo-protocol-stage {
   width: 100%;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding-top: clamp(1.2rem, 4vh, 2.6rem);
+  padding-right: clamp(1.25rem, 4vw, 3rem);
+  padding-left: clamp(1.25rem, 4vw, 3rem);
 }
 
 .razlo-protocol-ambient::before {

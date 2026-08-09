@@ -4,7 +4,6 @@ import Values from '../components/Values';
 import Projects from '../components/Projects';
 import ProtocolShowcase from '../components/ProtocolShowcase';
 import Footer from '../components/Footer';
-import SeamReveal from '../components/SeamReveal';
 import { useDocumentMeta } from '../lib/useDocumentMeta';
 
 const Home = () => {
@@ -17,7 +16,7 @@ const Home = () => {
     <>
       <Navbar />
       <div className="dark"><Hero /></div>
-      <SeamReveal><Values /></SeamReveal>
+      <Values />
       <div className="dark"><Projects /></div>
       <div className="dark"><ProtocolShowcase /></div>
       <Footer />

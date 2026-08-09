@@ -29,7 +29,7 @@ function GlassBubble({ className }: { className: string }) {
 
 export default function Values() {
   return (
-    <section className="values-section relative overflow-hidden bg-[#131313] px-5 py-28 text-white sm:px-8 md:px-12 md:py-40 lg:px-20">
+    <section className="values-section relative min-h-screen overflow-hidden bg-[#131313] px-5 pb-24 pt-32 text-white sm:px-8 md:px-12 lg:px-16">
       <div className="values-ambient" aria-hidden="true" />
       <GlassBubble className="values-bubble-1" />
       <GlassBubble className="values-bubble-2" />
@@ -38,7 +38,7 @@ export default function Values() {
       <GlassBubble className="values-bubble-5" />
       <GlassBubble className="values-bubble-6" />
 
-      <div className="relative z-10 mx-auto flex min-h-[78vh] max-w-[1500px] flex-col justify-center">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1500px] flex-col justify-center">
         <motion.p
           className="razlo-kicker mb-10 text-[#FFB692]"
           initial={{ opacity: 0, y: 18 }}
