@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Check, ArrowUpRight } from 'lucide-react';
+import { Check, ArrowUpRight, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -52,76 +52,45 @@ const PRICING_DATA: Record<PricingCategory, PricingPlan[]> = {
 
 const CATEGORIES = Object.keys(PRICING_DATA) as PricingCategory[];
 
-function PlanCard({ plan, currency, category }: { plan: PricingPlan; currency: Currency; category: PricingCategory }) {
+function PricingCard({ item, currency, category, plans }: { item: SwipeStackItem; currency: Currency; category: PricingCategory; plans: PricingPlan[] }) {
+  const plan = plans.find((p) => p.name === item.id)!;
   const navigate = useNavigate();
   const price = new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 }).format(
     currency === 'USD' ? plan.priceUSD : plan.priceUSD * EXCHANGE_RATE,
   );
-  return (
-    <motion.article
-      layout
-      initial={{ opacity: 0, y: 25 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55 }}
-      className={cn(
-        'group relative flex min-h-[410px] flex-col justify-between overflow-hidden rounded-sm border p-6 transition-all duration-300',
-        plan.isFeatured
-          ? 'border-[#B15D2E] bg-white shadow-[0_18px_60px_rgba(177,93,46,0.12)] dark:bg-noir-lowest'
-          : 'border-black/10 bg-white/60 hover:border-[#B15D2E]/60 dark:border-white/10 dark:bg-noir-lowest/60',
-      )}
-    >
-      {plan.isFeatured && <span className="absolute right-4 top-4 rounded-full bg-[#FFB692] px-3 py-1 text-[9px] font-bold uppercase tracking-[0.18em] text-black">{plan.badgeLabel}</span>}
-      <div>
-        <h2 className="font-serif text-3xl tracking-tight text-black/90 dark:text-white/90">{plan.name}</h2>
-        <p className="mt-3 text-xl font-bold tracking-tight text-black/75 dark:text-white/70">{price}</p>
-        <div className="my-6 h-px w-8 bg-[#B15D2E]/50" />
-        <ul className="space-y-3">
-          {plan.features.map((feature) => (
-            <li key={feature} className="flex items-start gap-3 text-xs leading-snug text-black/60 dark:text-white/45">
-              <Check size={13} className="mt-0.5 shrink-0 text-[#B15D2E]" />
-              {feature}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-8">
-        <p className="mb-4 text-[10px] italic text-black/45 dark:text-white/30">{plan.note}</p>
-        <Button
-          variant="primary"
-          size="sm"
-          className="w-full justify-center"
-          onClick={() => navigate(`/contact?plan=${encodeURIComponent(plan.name)}&category=${encodeURIComponent(category)}`)}
-        >
-          Initiate Protocol <ArrowUpRight size={13} />
-        </Button>
-      </div>
-    </motion.article>
-  );
-}
-
-function PricingStackCard({ item, currency, category, plans }: { item: SwipeStackItem; currency: Currency; category: PricingCategory; plans: PricingPlan[] }) {
-  const plan = plans.find((candidate) => candidate.name === item.id)!;
-  const navigate = useNavigate();
-  const price = new Intl.NumberFormat('en-US', { style: 'currency', currency, maximumFractionDigits: 0 }).format(currency === 'USD' ? plan.priceUSD : plan.priceUSD * EXCHANGE_RATE);
 
   return (
-    <div className="flex min-h-[335px] flex-col justify-between">
-      <div>
-        <div className="mb-7 flex items-start justify-between gap-4">
-          <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-[#B15D2E] dark:text-[#FFB692]">{category} / {item.eyebrow}</span>
-          <span className="font-mono text-[10px] tracking-[0.18em] opacity-35">{item.id}</span>
-        </div>
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="font-serif text-3xl tracking-tight sm:text-4xl">{plan.name}</h2>
-          <p className="pb-1 text-lg font-bold tracking-tight text-[#B15D2E] dark:text-[#FFB692]">{price}</p>
-        </div>
-        <p className="mt-3 text-[10px] italic opacity-45">{plan.note}</p>
-        <div className="my-5 h-px w-8 bg-[#B15D2E]/50" />
-        <div className="grid grid-cols-1 gap-x-5 gap-y-2">
-          {plan.features.map((feature) => <span key={feature} className="flex items-start gap-2 text-xs leading-snug opacity-60"><Check size={12} className="mt-0.5 shrink-0 text-[#B15D2E]" />{feature}</span>)}
-        </div>
+    <div className="pr-card-inner">
+      <div className="pr-card-head">
+        <span className="pr-card-kicker">{category} · {item.eyebrow}</span>
+        {plan.isFeatured && <span className="pr-card-pill">{plan.badgeLabel}</span>}
       </div>
-      <Button variant="primary" size="sm" className="mt-6 w-full justify-center" onClick={() => navigate(`/contact?plan=${encodeURIComponent(plan.name)}&category=${encodeURIComponent(category)}`)}>Initiate Protocol <ArrowUpRight size={13} /></Button>
+
+      <div className="pr-card-title-row">
+        <h2>{plan.name}</h2>
+        <span className="pr-card-price">{price}</span>
+      </div>
+
+      <p className="pr-card-note">{plan.note}</p>
+      <div className="pr-card-rule" />
+
+      <ul className="pr-card-features">
+        {plan.features.map((f) => (
+          <li key={f}>
+            <Check size={13} strokeWidth={2} />
+            <span>{f}</span>
+          </li>
+        ))}
+      </ul>
+
+      <Button
+        variant="copper"
+        size="sm"
+        className="pr-card-cta"
+        onClick={() => navigate(`/contact?plan=${encodeURIComponent(plan.name)}&category=${encodeURIComponent(category)}`)}
+      >
+        Start with this plan <ArrowUpRight size={13} />
+      </Button>
     </div>
   );
 }
@@ -133,55 +102,258 @@ export default function Pricing() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#F5F3EF] text-black dark:bg-noir-surface dark:text-white">
+    <div className="pr">
       <Navbar />
-      <main className="mx-auto max-w-[1500px] px-5 pb-28 pt-32 md:px-12 lg:px-20">
-        <div className="mb-20 max-w-4xl">
-          <motion.p initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} className="razlo-kicker mb-5">Razlo.digital / Investment</motion.p>
-          <motion.h1 initial={{ opacity: 0, x: -55 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="font-serif text-5xl leading-[0.92] tracking-tight md:text-8xl">Simple,<br /><em className="text-[#B15D2E]">Transparent</em><br />Pricing.</motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }} className="mt-8 max-w-2xl text-sm leading-relaxed text-black/60 dark:text-white/50">Clear pricing built for growing brands — no hidden fees, no surprises. Plans start from $100 for brand identity and $130 for a professional landing page, and scale up to full website and production packages.</motion.p>
-        </div>
 
-        <div className="razlo-hairline mb-10 flex flex-col gap-6 border-b pb-6 md:flex-row md:items-end md:justify-between">
-          <div className="flex flex-wrap gap-2">
+      <main className="pr-main">
+        {/* ambient layer */}
+        <div className="pr-ambient" />
+        <div className="pr-bubble pbb-1" />
+        <div className="pr-bubble pbb-2" />
+        <div className="pr-bubble pbb-3" />
+
+        {/* ============ OPENING ============ */}
+        <section className="pr-open">
+          <p className="pr-kicker">Razlo.digital / Investment</p>
+          <h1 className="pr-h1">
+            <span className="pr-mask"><span>Simple, <span className="pr-pill">transparent</span></span></span>
+            <span className="pr-mask"><span>pricing.</span></span>
+          </h1>
+          <p className="pr-lede">
+            Clear pricing built for growing brands — no hidden fees, no surprises. Plans start from $100 for brand identity and $130 for a professional landing page, and scale to full website and production packages.
+          </p>
+          <div className="pr-hairline">
+            <span>05 Categories</span>
+            <span>Fixed pricing</span>
+            <span>No hidden fees</span>
+          </div>
+        </section>
+
+        {/* ============ CONTROLS ============ */}
+        <div className="pr-controls">
+          <div className="pr-cats">
             {CATEGORIES.map((item) => (
-              <button key={item} type="button" onClick={() => setCategory(item)} className={cn('rounded-full px-4 py-2 text-[10px] font-bold uppercase tracking-[0.14em] transition-colors', category === item ? 'bg-black text-white dark:bg-white dark:text-black' : 'text-black/45 hover:bg-black/5 dark:text-white/45 dark:hover:bg-white/5')}>{item}</button>
+              <button
+                key={item}
+                type="button"
+                onClick={() => setCategory(item)}
+                className={cn('pr-cat', category === item && 'pr-cat-on')}
+              >
+                {item}
+              </button>
             ))}
           </div>
-          <div className="flex items-center gap-4 rounded-full border border-black/10 px-4 py-2 dark:border-white/10">
-            <span className={cn('text-[10px] font-bold tracking-[0.18em]', currency === 'USD' ? 'text-black dark:text-white' : 'text-black/25 dark:text-white/25')}>USD</span>
-            <button type="button" onClick={() => setCurrency((value) => value === 'USD' ? 'AOA' : 'USD')} className="relative h-5 w-10 rounded-full bg-black/10 px-1 dark:bg-white/10" aria-label="Toggle currency">
-              <motion.span animate={{ x: currency === 'USD' ? 0 : 20 }} className="block h-3 w-3 rounded-full bg-[#B15D2E]" />
+
+          <div className="pr-currency">
+            <span className={cn('pr-cur-label', currency === 'USD' && 'pr-cur-on')}>USD</span>
+            <button
+              type="button"
+              onClick={() => setCurrency((v) => (v === 'USD' ? 'AOA' : 'USD'))}
+              className="pr-toggle"
+              aria-label="Toggle currency"
+            >
+              <span className="pr-toggle-knob" style={{ transform: currency === 'USD' ? 'translateX(0)' : 'translateX(20px)' }} />
             </button>
-            <span className={cn('text-[10px] font-bold tracking-[0.18em]', currency === 'AOA' ? 'text-black dark:text-white' : 'text-black/25 dark:text-white/25')}>AOA</span>
+            <span className={cn('pr-cur-label', currency === 'AOA' && 'pr-cur-on')}>AOA</span>
           </div>
         </div>
 
+        {/* ============ PLANS ============ */}
         <AnimatePresence mode="wait">
           {category === 'Partnership' ? (
-            <motion.section key="partnership" initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} className="grid gap-12 border-l-4 border-[#B15D2E] py-5 pl-6 md:grid-cols-2 md:pl-10">
-              <div><h2 className="font-serif text-4xl md:text-6xl">The Partner Plan</h2><p className="mt-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#B15D2E]">No upfront cost. We build together, we grow together.</p><p className="mt-6 max-w-lg text-sm leading-relaxed text-black/60 dark:text-white/50">The Partner Plan is Razlo.digital's equity-based option for founders and business owners across Angola who have a great idea but limited startup budget. We build your complete digital presence — website, brand identity, and launch content — at no upfront cost, in exchange for an agreed equity share or revenue commission. We take on two to three partner projects per quarter.</p><Button variant="primary" size="md" onClick={() => navigate('/contact?plan=Partner&category=Partnership')}>Apply for Partnership <ArrowUpRight size={14} /></Button></div>
-              <div className="space-y-5"><div className="razlo-glow-card border border-black/10 bg-white p-6 dark:border-white/10 dark:bg-noir-lowest"><h3 className="mb-4 font-medium">What we build for you</h3><ul className="space-y-2 text-xs text-black/60 dark:text-white/45">{['Full website (Professional tier equivalent)', 'Complete brand identity system', 'Launch content pack (AI media)', '6-month maintenance & consulting'].map((item) => <li key={item} className="flex gap-2"><span className="text-[#B15D2E]">→</span>{item}</li>)}</ul></div><div className="razlo-glow-card border border-black/10 bg-white p-6 dark:border-white/10 dark:bg-noir-lowest"><h3 className="mb-4 font-medium">What we ask in return</h3><ul className="space-y-2 text-xs text-black/60 dark:text-white/45">{['Equity stake: 5–15% negotiated upfront', 'OR revenue share: 8–20% of monthly revenue', 'Business legally registered in Angola'].map((item) => <li key={item} className="flex gap-2"><span className="text-[#B15D2E]">→</span>{item}</li>)}</ul></div></div>
+            <motion.section
+              key="partnership"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
+              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              className="pr-partner"
+            >
+              <div className="pr-partner-main">
+                <span className="pr-partner-rule" />
+                <h2>The <span className="pr-pill">partner</span> plan</h2>
+                <p className="pr-partner-sub">No upfront cost. We build together, we grow together.</p>
+                <p className="pr-partner-body">
+                  The Partner Plan is Razlo.digital&apos;s equity-based option for founders and business owners across Angola who have a great idea but limited startup budget. We build your complete digital presence — website, brand identity, and launch content — at no upfront cost, in exchange for an agreed equity share or revenue commission. We take on two to three partner projects per quarter.
+                </p>
+                <Button variant="copper" size="md" onClick={() => navigate('/contact?plan=Partner&category=Partnership')}>
+                  Apply for partnership <ArrowUpRight size={14} />
+                </Button>
+              </div>
+
+              <div className="pr-partner-cards">
+                <div className="pr-partner-card">
+                  <h3>What we build for you</h3>
+                  <ul>
+                    {['Full website (Professional tier equivalent)', 'Complete brand identity system', 'Launch content pack (AI media)', '6-month maintenance & consulting'].map((i) => (
+                      <li key={i}><span className="pr-partner-mark">→</span>{i}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="pr-partner-card">
+                  <h3>What we ask in return</h3>
+                  <ul>
+                    {['Equity stake: 5–15% negotiated upfront', 'OR revenue share: 8–20% of monthly revenue', 'Business legally registered in Angola'].map((i) => (
+                      <li key={i}><span className="pr-partner-mark">→</span>{i}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </motion.section>
           ) : (
-            <motion.div key={category} className="w-full">
-              <div className="block lg:hidden">
-                <SwipeStack
-                  dark={false}
-                  items={PRICING_DATA[category].map((plan): SwipeStackItem => ({ id: plan.name, eyebrow: plan.isFeatured ? plan.badgeLabel ?? 'Featured' : 'Plan', title: plan.name, description: plan.note, details: plan.features }))}
-                  renderCard={(item) => <PricingStackCard item={item} currency={currency} category={category} plans={PRICING_DATA[category]} />}
-                />
-              </div>
-              <div className="hidden lg:grid grid-cols-4 gap-6">
-                {PRICING_DATA[category].map((plan) => (
-                  <PlanCard key={plan.name} plan={plan} currency={currency} category={category} />
-                ))}
-              </div>
+            <motion.div
+              key={category}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+              className="pr-stack-wrap"
+            >
+              <SwipeStack
+                dark={false}
+                size="pricing"
+                items={PRICING_DATA[category].map((plan): SwipeStackItem => ({
+                  id: plan.name,
+                  eyebrow: plan.isFeatured ? plan.badgeLabel ?? 'Featured' : 'Plan',
+                  title: plan.name,
+                  description: plan.note,
+                  details: plan.features,
+                }))}
+                renderCard={(item) => (
+                  <PricingCard item={item} currency={currency} category={category} plans={PRICING_DATA[category]} />
+                )}
+              />
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* ============ NOT SURE STRIP ============ */}
+        <section className="pr-unsure">
+          <p className="pr-unsure-k">Not sure which tier?</p>
+          <h2 className="pr-unsure-h">Let&apos;s talk it <em>through.</em></h2>
+          <p className="pr-unsure-lede">
+            Book a free 15-minute discovery call. We&apos;ll help you pick the right plan, or build a custom package around your goals.
+          </p>
+          <Button variant="copper" size="lg" onClick={() => navigate('/contact')}>
+            Book a discovery call <ArrowRight size={15} />
+          </Button>
+        </section>
       </main>
+
       <Footer />
+
+      <style>{`
+        .pr{--surface:#F5F3EF;--ink:#0E0E0E;--ink-soft:rgba(14,14,14,.6);--ink-faint:rgba(14,14,14,.42);
+          --copper:#B15D2E;--copper-light:#FFB692;
+          --rule:rgba(14,14,14,.12);--glass-border:rgba(255,255,255,.65);--glass-bg:rgba(255,255,255,.55);--glass-hi:rgba(255,255,255,.7);
+          background:var(--surface);color:var(--ink);font-family:"Space Grotesk",ui-sans-serif,system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;transition:background .5s,color .5s}
+        .pr *{box-sizing:border-box}
+        body.dark .pr{--surface:#131313;--ink:#FFF;--ink-soft:rgba(255,255,255,.6);--ink-faint:rgba(255,255,255,.45);
+          --copper:#FFB692;--copper-light:#FFB692;
+          --rule:rgba(255,255,255,.12);--glass-border:rgba(255,255,255,.18);--glass-bg:rgba(255,255,255,.05);--glass-hi:rgba(255,255,255,.18)}
+
+        .pr-main{position:relative;max-width:1500px;margin:0 auto;padding:clamp(7rem,16vh,10rem) clamp(1.25rem,4vw,3rem) 3rem;overflow:hidden}
+
+        .pr-ambient{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+        .pr-ambient::before,.pr-ambient::after{content:"";position:absolute;border-radius:50%;filter:blur(80px)}
+        .pr-ambient::before{top:4%;left:-4%;width:440px;height:440px;background:radial-gradient(circle,rgba(177,93,46,.09),transparent 70%)}
+        .pr-ambient::after{bottom:10%;right:-6%;width:500px;height:500px;background:radial-gradient(circle,rgba(255,182,146,.08),transparent 70%)}
+        body.dark .pr-ambient::before{background:radial-gradient(circle,rgba(255,182,146,.06),transparent 70%)}
+        body.dark .pr-ambient::after{background:radial-gradient(circle,rgba(177,93,46,.05),transparent 70%)}
+
+        .pr-bubble{position:absolute;border-radius:50%;border:1px solid var(--glass-border);background:linear-gradient(135deg,rgba(255,255,255,.35),rgba(255,255,255,.08));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);pointer-events:none;z-index:1}
+        .pr-bubble::after{content:"";position:absolute;top:20%;left:22%;width:30%;height:22%;border-radius:50%;background:rgba(255,255,255,.6);filter:blur(2px)}
+        body.dark .pr-bubble{background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02))}
+        body.dark .pr-bubble::after{background:rgba(255,255,255,.15)}
+        .pbb-1{top:10%;right:6%;width:72px;height:72px;animation:pr-drift 9s ease-in-out infinite alternate}
+        .pbb-2{top:36%;left:3%;width:36px;height:36px;animation:pr-drift 11s ease-in-out infinite alternate-reverse}
+        .pbb-3{bottom:22%;right:10%;width:26px;height:26px;border-color:rgba(255,182,146,.45);background:linear-gradient(135deg,rgba(255,182,146,.28),rgba(255,255,255,.08));animation:pr-drift 8s ease-in-out infinite alternate}
+        @keyframes pr-drift{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-18px) rotate(3deg)}}
+
+        .pr-kicker{font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--copper)}
+
+        .pr-open{position:relative;z-index:2;max-width:900px;margin-bottom:3.5rem}
+        .pr-h1{margin-top:1.4rem;font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.8rem,8vw,7rem);line-height:.88;letter-spacing:-.04em}
+        .pr-h1 em{font-style:italic;color:var(--copper)}
+        .pr-mask{display:block;overflow:hidden}
+        .pr-mask>span{display:block;transform:translateY(112%);animation:pr-maskup 1s cubic-bezier(.16,1,.3,1) forwards}
+        .pr-mask:nth-child(2)>span{animation-delay:.12s}
+        @keyframes pr-maskup{to{transform:none}}
+
+        .pr-pill{position:relative;display:inline-block;vertical-align:baseline;margin:0 .1em;font-family:"Noto Serif",serif;font-style:italic;font-weight:500;color:var(--copper);padding:.08em .45em .14em;border-radius:999px;border:1px solid rgba(255,182,146,.45);background:var(--glass-bg);backdrop-filter:blur(12px) saturate(140%);-webkit-backdrop-filter:blur(12px) saturate(140%);box-shadow:0 8px 24px rgba(177,93,46,.14),inset 0 1px 0 var(--glass-hi)}
+        .pr-pill::after{content:"";position:absolute;top:18%;left:20%;width:22%;height:28%;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(1.5px);pointer-events:none}
+        body.dark .pr-pill::after{background:rgba(255,255,255,.2)}
+
+        .pr-lede{margin-top:1.6rem;max-width:44rem;font-size:clamp(.95rem,1.6vw,1.05rem);line-height:1.7;color:var(--ink-soft)}
+
+        .pr-hairline{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid var(--rule);margin-top:2.5rem;padding-top:1.2rem;font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--ink-faint)}
+
+        /* controls */
+        .pr-controls{position:relative;z-index:2;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1.5rem;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--rule)}
+        .pr-cats{display:flex;flex-wrap:wrap;gap:.5rem}
+        .pr-cat{font:inherit;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:.7rem 1.2rem;border-radius:999px;border:1px solid var(--rule);background:transparent;color:var(--ink-faint);cursor:pointer;transition:all .25s}
+        .pr-cat:hover{color:var(--ink);border-color:var(--ink-faint)}
+        .pr-cat-on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+
+        .pr-currency{display:flex;align-items:center;gap:.9rem;padding:.5rem 1rem;border-radius:999px;border:1px solid var(--rule);background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+        .pr-cur-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);transition:color .25s}
+        .pr-cur-on{color:var(--ink)}
+        .pr-toggle{position:relative;width:40px;height:20px;border-radius:999px;border:0;background:rgba(14,14,14,.1);cursor:pointer;padding:3px}
+        body.dark .pr-toggle{background:rgba(255,255,255,.1)}
+        .pr-toggle-knob{display:block;width:14px;height:14px;border-radius:50%;background:var(--copper);transition:transform .35s cubic-bezier(.16,1,.3,1)}
+
+        /* cards (rendered inside SwipeStack's glass shell) */
+        .pr-card-inner{display:flex;flex-direction:column;min-height:380px;justify-content:space-between}
+        .pr-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
+        .pr-card-kicker{font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--copper)}
+        .pr-card-pill{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:.45em .9em .5em;border-radius:999px;border:1px solid rgba(255,182,146,.45);background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--copper);box-shadow:0 6px 14px rgba(177,93,46,.12),inset 0 1px 0 var(--glass-hi);position:relative}
+        .pr-card-pill::after{content:"";position:absolute;top:20%;left:20%;width:22%;height:26%;border-radius:50%;background:rgba(255,255,255,.5);filter:blur(1px);pointer-events:none}
+        body.dark .pr-card-pill::after{background:rgba(255,255,255,.18)}
+
+        .pr-card-title-row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:.5rem}
+        .pr-card-title-row h2{font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(1.8rem,4vw,2.4rem);line-height:1;letter-spacing:-.02em}
+        .pr-card-price{font-family:"Noto Serif",serif;font-weight:500;font-size:clamp(1.1rem,2.2vw,1.4rem);color:var(--copper);white-space:nowrap}
+        .pr-card-note{font-size:10px;font-style:italic;color:var(--ink-faint);margin-bottom:1.2rem}
+        .pr-card-rule{height:1px;width:2rem;background:var(--copper);opacity:.5;margin-bottom:1.4rem}
+
+        .pr-card-features{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.7rem;margin-bottom:1.5rem}
+        .pr-card-features li{display:flex;align-items:flex-start;gap:.6rem;font-size:.85rem;line-height:1.4;color:var(--ink-soft)}
+        .pr-card-features svg{flex-shrink:0;margin-top:2px;color:var(--copper)}
+
+        .pr-card-cta{width:100%;justify-content:center}
+
+        /* partnership */
+        .pr-partner{position:relative;z-index:2;display:grid;gap:3rem;padding:2rem 0}
+        @media (min-width:900px){.pr-partner{grid-template-columns:1.1fr 1fr;gap:4rem;align-items:start}}
+        .pr-partner-main{position:relative;padding-left:1.5rem}
+        .pr-partner-rule{position:absolute;left:0;top:.4rem;bottom:.4rem;width:3px;background:var(--copper);border-radius:2px}
+        .pr-partner-main h2{font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.2rem,6vw,4rem);line-height:.95;letter-spacing:-.03em;margin-bottom:.5rem}
+        .pr-partner-sub{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--copper);margin-bottom:1.5rem}
+        .pr-partner-body{font-size:.95rem;line-height:1.7;color:var(--ink-soft);margin-bottom:2rem;max-width:32rem}
+
+        .pr-partner-cards{display:flex;flex-direction:column;gap:1rem}
+        .pr-partner-card{border-radius:1.25rem;border:1px solid var(--glass-border);background:var(--glass-bg);backdrop-filter:blur(12px) saturate(140%);-webkit-backdrop-filter:blur(12px) saturate(140%);padding:1.5rem;box-shadow:0 12px 36px rgba(177,93,46,.10),inset 0 1px 0 var(--glass-hi);position:relative;overflow:hidden}
+        body.dark .pr-partner-card{box-shadow:0 12px 36px rgba(0,0,0,.4),inset 0 1px 0 var(--glass-hi)}
+        .pr-partner-card::before{content:"";position:absolute;top:-10%;left:-10%;width:40%;height:40%;border-radius:50%;background:rgba(255,255,255,.4);filter:blur(30px);pointer-events:none}
+        body.dark .pr-partner-card::before{background:rgba(255,255,255,.06)}
+        .pr-partner-card h3{font-family:"Noto Serif",serif;font-weight:500;font-size:1rem;margin-bottom:1rem;position:relative}
+        .pr-partner-card ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.6rem;position:relative}
+        .pr-partner-card li{font-size:.82rem;line-height:1.5;color:var(--ink-soft);display:flex;gap:.5rem}
+        .pr-partner-mark{color:var(--copper);flex-shrink:0}
+
+        /* not sure */
+        .pr-unsure{position:relative;z-index:2;text-align:center;padding:5rem 1rem 3rem;margin-top:4rem;border-top:1px solid var(--rule)}
+        .pr-unsure-k{font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--copper);margin-bottom:1.2rem}
+        .pr-unsure-h{font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2rem,5.5vw,4rem);line-height:.95;letter-spacing:-.03em;margin-bottom:1.2rem}
+        .pr-unsure-h em{font-style:italic;color:var(--copper)}
+        .pr-unsure-lede{max-width:28rem;margin:0 auto 2rem;font-size:.95rem;line-height:1.7;color:var(--ink-soft)}
+
+        .pr-stack-wrap{position:relative;z-index:2}
+
+        @media (prefers-reduced-motion:reduce){
+          .pr-mask>span,.pr-bubble{animation-duration:.01ms!important;animation-iteration-count:1!important}
+        }
+      `}</style>
     </div>
   );
 }
