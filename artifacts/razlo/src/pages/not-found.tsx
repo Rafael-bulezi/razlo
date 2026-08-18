@@ -1,23 +1,25 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { AlertCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useDocumentMeta } from '../lib/useDocumentMeta';
 
 export default function NotFound() {
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md mx-4">
-        <CardContent className="pt-6">
-          <div className="flex mb-4 gap-2">
-            <AlertCircle className="h-8 w-8 text-red-500" />
-            <h1 className="text-2xl font-bold text-gray-900">
-              404 Page Not Found
-            </h1>
-          </div>
+  useDocumentMeta(
+    '404 — Page Not Found | Razlo Digital Studio',
+    'The page you are looking for does not exist. Return to Razlo Digital Studio homepage.',
+  );
 
-          <p className="mt-4 text-sm text-gray-600">
-            Did you forget to add the page to the router?
-          </p>
-        </CardContent>
-      </Card>
+  return (
+    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0E0E0E] text-[#F5F3EF] px-6 text-center">
+      <div className="text-xs uppercase tracking-widest text-[#FFB692] font-mono mb-4">404 Error</div>
+      <h1 className="text-4xl sm:text-6xl font-light mb-4 tracking-tight">Page Not Found</h1>
+      <p className="max-w-md text-sm text-[#F5F3EF]/60 mb-8 leading-relaxed">
+        The page you are looking for might have been moved, renamed, or is temporarily unavailable.
+      </p>
+      <Link
+        to="/"
+        className="px-6 py-3 rounded-full bg-[#F5F3EF] text-[#0E0E0E] font-medium text-xs tracking-wider uppercase hover:bg-white transition-colors"
+      >
+        Back to Home
+      </Link>
     </div>
   );
 }

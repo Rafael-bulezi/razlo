@@ -9,7 +9,7 @@ export const PROJECTS: Project[] = [
     description: "Veloria is a premier seafood destination on the Luanda coastline, blending fresh Atlantic flavors with sophisticated, panoramic ocean views. The experience celebrates Angola's rich maritime heritage through a refined, seasonal menu served in an elegant, sun-drenched setting.",
     techStack: ['React', 'Three.js', 'GSAP', 'WebGL', 'Gemini 3.1'],
     year: '2025',
-    liveSiteUrl: 'https://example.com',
+    liveSiteUrl: 'https://veloria-git-main-rafael-bulezis-projects.vercel.app',
     gallery: [
       'https://res.cloudinary.com/dv9jpkgrs/image/upload/v1773059854/rafael-bulezi-restaurant-demo-velor.vercel.app__7_lvjupf.jpg',
       'https://res.cloudinary.com/dv9jpkgrs/image/upload/v1773060423/rafael-bulezi-restaurant-demo-velor.vercel.app__8_tydoky.jpg',
