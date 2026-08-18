@@ -1,0 +1,11 @@
+{
+  "buildCommand": "pnpm --filter @workspace/razlo run build",
+  "outputDirectory": "artifacts/razlo/dist/public",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
