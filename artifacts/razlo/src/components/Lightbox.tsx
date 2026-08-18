@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'motion/react';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import SmoothImage from './SmoothImage';
 
 interface LightboxProps {
   images: string[];
@@ -35,71 +34,71 @@ const Lightbox: React.FC<LightboxProps> = ({ images, currentIndex, onClose, onPr
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[8000] flex items-center justify-center bg-[#090909]/[0.98] px-3 py-3 sm:px-8 sm:py-8"
+        className="fixed inset-0 z-[8000] flex items-center justify-center bg-[#090909]/[0.98]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
       >
+        {/* Counter — top-left */}
+        <span className="absolute left-5 top-5 z-30 text-[10px] font-bold uppercase tracking-[0.22em] text-white/50 sm:left-7 sm:top-7">
+          {currentIndex + 1} / {images.length}
+        </span>
+
+        {/* Close — bottom-right */}
         <button
           onClick={(event) => { event.stopPropagation(); onClose(); }}
-          className="razlo-glass-control absolute bottom-5 right-5 z-20 flex h-12 items-center gap-2 rounded-full px-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition sm:bottom-7 sm:right-7"
+          className="razlo-glass-control absolute bottom-5 right-5 z-30 flex h-12 items-center gap-2 rounded-full px-4 text-[10px] font-bold uppercase tracking-[0.18em] text-white transition sm:bottom-7 sm:right-7"
           aria-label="Close lightbox"
         >
           Close <X size={16} />
         </button>
 
-        {/* Counter */}
-        <span className="absolute left-5 top-5 text-[10px] font-bold uppercase tracking-[0.22em] text-white/50 sm:left-7 sm:top-7">
-          {currentIndex + 1} / {images.length}
-        </span>
-
-        {/* Prev */}
+        {/* Prev — vertically centered, left edge */}
         {images.length > 1 && (
           <button
             onClick={(e) => { e.stopPropagation(); onPrev(); }}
-            className="razlo-glass-control absolute bottom-5 left-5 z-20 flex h-11 w-11 items-center justify-center rounded-full text-white transition sm:bottom-7 sm:left-7"
+            className="razlo-glass-control absolute left-3 top-1/2 z-30 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-white transition sm:left-5 md:left-7"
             aria-label="Previous image"
           >
-            <ChevronLeft size={32} />
+            <ChevronLeft size={28} />
           </button>
         )}
 
-        {/* Image */}
+        {/* Next — vertically centered, right edge */}
+        {images.length > 1 && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onNext(); }}
+            className="razlo-glass-control absolute right-3 top-1/2 z-30 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-white transition sm:right-5 md:right-7"
+            aria-label="Next image"
+          >
+            <ChevronRight size={28} />
+          </button>
+        )}
+
+        {/* Dynamic Image Canvas */}
         <motion.div
           key={currentIndex}
-          initial={{ opacity: 0, scale: 0.95 }}
+          initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.25 }}
-            className="h-full max-h-[82vh] w-full max-w-6xl px-2 pb-14 sm:max-h-[84vh] sm:px-16 sm:pb-0 flex items-center justify-center"
+          exit={{ opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.22 }}
+          className="relative z-20 flex items-center justify-center max-h-[88vh] max-w-[86vw] select-none px-10 sm:px-14"
           onClick={(e) => e.stopPropagation()}
           drag={images.length > 1 ? 'x' : false}
-          dragConstraints={{ left: -180, right: 180 }}
-          dragElastic={0.72}
+          dragConstraints={{ left: -140, right: 140 }}
+          dragElastic={0.6}
           onDragEnd={handleDragEnd}
           style={{ touchAction: 'pan-y' }}
           whileDrag={{ scale: 0.98, cursor: 'grabbing' }}
         >
-          <SmoothImage
+          <img
             src={images[currentIndex]}
             alt={`Image ${currentIndex + 1}`}
-            className="max-h-full max-w-full h-auto w-auto rounded-2xl shadow-[0_24px_90px_rgba(0,0,0,0.5)]"
-            containerClassName="flex items-center justify-center"
-            objectFit="contain"
+            className="max-h-[84vh] max-w-[82vw] w-auto h-auto object-contain rounded-xl shadow-[0_28px_90px_rgba(0,0,0,0.75)]"
             loading="eager"
           />
         </motion.div>
-
-        {/* Next */}
-        {images.length > 1 && (
-          <button
-            onClick={(e) => { e.stopPropagation(); onNext(); }}
-            className="razlo-glass-control absolute bottom-5 right-20 z-20 flex h-11 w-11 items-center justify-center rounded-full text-white transition sm:bottom-7 sm:right-24"
-            aria-label="Next image"
-          >
-            <ChevronRight size={32} />
-          </button>
-        )}
       </motion.div>
     </AnimatePresence>
   );

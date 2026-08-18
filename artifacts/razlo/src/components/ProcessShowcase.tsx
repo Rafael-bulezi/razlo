@@ -4,10 +4,10 @@ import Button from './ui/razlo-button';
 import { ArrowRight } from 'lucide-react';
 
 const DESKTOP_WAYPOINTS = [
-  { x: 168, y: 90 },
-  { x: 1148, y: 306 },
-  { x: 252, y: 558 },
-  { x: 1176, y: 756 },
+  { x: 12, y: 34 },
+  { x: 40, y: 58 },
+  { x: 68, y: 34 },
+  { x: 92, y: 58 },
 ] as const;
 
 const MOBILE_WAYPOINTS = [
@@ -16,6 +16,15 @@ const MOBILE_WAYPOINTS = [
   { x: 22, y: 58 },
   { x: 80, y: 82 },
 ] as const;
+
+function smoothPath(pts: readonly { x: number; y: number }[]): string {
+  let d = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], mx = (a.x + b.x) / 2;
+    d += ` C ${mx} ${a.y}, ${mx} ${b.y}, ${b.x} ${b.y}`;
+  }
+  return d;
+}
 
 function findRouteProgress(route: SVGPathElement, target: { x: number; y: number }) {
   const length = route.getTotalLength();
@@ -171,10 +180,10 @@ const ProtocolShowcase = () => {
           <div className="protocol-glass-bubble protocol-gb-4" aria-hidden="true" />
           <div className="protocol-glass-bubble protocol-gb-5" aria-hidden="true" />
 
-          <svg className="protocol-route protocol-route-desktop" viewBox="0 0 1400 900" preserveAspectRatio="none" aria-hidden="true">
-            <path className="protocol-track" d="M 168 90 C 520 120 860 210 1148 306 C 900 410 560 460 252 558 C 560 650 900 690 1176 756" />
-            <path ref={desktopRouteRef} className="protocol-route-line" strokeDasharray={routeState.length || undefined} strokeDashoffset={(routeState.length || 0) * (1 - progress)} d="M 168 90 C 520 120 860 210 1148 306 C 900 410 560 460 252 558 C 560 650 900 690 1176 756" />
-            <circle className="protocol-ink-drop" cx={routeState.dot.x} cy={routeState.dot.y} r="7" />
+          <svg className="protocol-route protocol-route-desktop" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <path className="protocol-track" d={smoothPath(DESKTOP_WAYPOINTS)} />
+            <path ref={desktopRouteRef} className="protocol-route-line" strokeDasharray={routeState.length || undefined} strokeDashoffset={(routeState.length || 0) * (1 - progress)} d={smoothPath(DESKTOP_WAYPOINTS)} />
+            <circle className="protocol-ink-drop" cx={routeState.dot.x} cy={routeState.dot.y} r="1.2" />
           </svg>
           <svg className="protocol-route protocol-route-mobile" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
             <path className="protocol-track" d="M 22 8 C 55 14 80 20 80 32 C 80 44 22 46 22 58 C 22 70 55 74 80 82" />

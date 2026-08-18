@@ -69,6 +69,7 @@ export function CurtainProvider({ children }: CurtainProviderProps) {
           <motion.div
             key="curtain"
             className="pointer-events-none fixed inset-0 z-[9000] overflow-hidden"
+            style={{ willChange: 'opacity', contain: 'strict' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -76,14 +77,19 @@ export function CurtainProvider({ children }: CurtainProviderProps) {
           >
             {Array.from({ length: SEAM_SLAT_COUNT }).map((_, i) => {
               const fromLeft = i % 2 === 0;
-              const restX = fromLeft ? '-100%' : '100%';
-              const exitX = fromLeft ? '100%' : '-100%';
+              const restX = fromLeft ? '-101%' : '101%';
+              const exitX = fromLeft ? '101%' : '-101%';
               const isLast = i === SEAM_SLAT_COUNT - 1;
               return (
                 <motion.div
                   key={i}
-                  className={SEAM_SLAT_BASE}
-                  style={{ top: `${(i * 100) / SEAM_SLAT_COUNT}%`, height: `${100 / SEAM_SLAT_COUNT}%` }}
+                  className="absolute left-0 w-full overflow-hidden bg-[#120F0D]/90 dark:bg-[#0A0A0A]/95 shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+                  style={{
+                    top: `${(i * 100) / SEAM_SLAT_COUNT}%`,
+                    height: `${100 / SEAM_SLAT_COUNT + 0.5}%`,
+                    transform: 'translateZ(0)',
+                    willChange: 'transform',
+                  }}
                   initial={{ x: reduceMotion ? '0%' : restX }}
                   animate={{ x: reduceMotion ? '0%' : cover ? '0%' : exitX }}
                   transition={{

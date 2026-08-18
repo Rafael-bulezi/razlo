@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import FilterBar from '../components/Works/FilterBar';
 import ProjectCard from '../components/Works/ProjectCard';
 import ProjectDetail from '../components/Works/ProjectDetail';
+import StudioCoversFan from '../components/Works/StudioCoversFan';
 import { PROJECTS } from '../data/projects';
 import { Category, Project } from '../types/project';
 import { useDocumentMeta } from '../lib/useDocumentMeta';
@@ -48,14 +49,18 @@ export default function Works() {
 
         {/* ============ OPENING ============ */}
         <section className="wk-open">
-          <p className="wk-kicker">Razlo.digital / Archive</p>
-          <h1 className="wk-h1">
-            <span className="wk-mask"><span>Work that</span></span>
-            <span className="wk-mask"><span><span className="wk-pill">moves.</span></span></span>
-          </h1>
-          <p className="wk-lede">
-            A collection of websites, identities, films, and visual systems built for brands ready to be taken seriously.
-          </p>
+          <div className="wk-open-left">
+            <p className="wk-kicker">Razlo.digital / Archive</p>
+            <h1 className="wk-h1">
+              <span className="wk-mask"><span>Work that</span></span>
+              <span className="wk-mask"><span><span className="wk-pill">moves.</span></span></span>
+            </h1>
+          </div>
+          <div className="wk-open-right">
+            <p className="wk-lede">
+              A collection of websites, identities, films, and visual systems built for brands ready to be taken seriously.
+            </p>
+          </div>
           <div className="wk-hairline">
             <span>{String(PROJECTS.length).padStart(2, '0')} Projects</span>
             <span>Est. 2024 · Luanda</span>
@@ -92,6 +97,9 @@ export default function Works() {
             </div>
           </AnimatePresence>
         </section>
+
+        {/* ============ STUDIO COVERS 9-FAN SECTION ============ */}
+        <StudioCoversFan />
       </main>
 
       <Footer />
@@ -119,7 +127,7 @@ export default function Works() {
           --copper:#FFB692;--copper-light:#FFB692;
           --rule:rgba(255,255,255,.12);--glass-border:rgba(255,255,255,.18);--glass-bg:rgba(255,255,255,.05);--glass-hi:rgba(255,255,255,.18)}
 
-        .wk-main{position:relative;max-width:1500px;margin:0 auto;padding:clamp(7rem,16vh,10rem) clamp(1.25rem,4vw,3rem) 7rem;overflow:hidden}
+        .wk-main{position:relative;max-width:1500px;margin:0 auto;padding:clamp(5rem,9vh,6.5rem) clamp(1.25rem,4vw,3rem) 5rem;overflow:hidden}
 
         .wk-ambient{position:absolute;inset:0;pointer-events:none;overflow:hidden}
         .wk-ambient::before,.wk-ambient::after{content:"";position:absolute;border-radius:50%;filter:blur(80px)}
@@ -137,10 +145,10 @@ export default function Works() {
         .wb-3{bottom:24%;right:10%;width:26px;height:26px;border-color:rgba(255,182,146,.45);background:linear-gradient(135deg,rgba(255,182,146,.28),rgba(255,255,255,.08));animation:wk-drift 8s ease-in-out infinite alternate}
         @keyframes wk-drift{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-18px) rotate(3deg)}}
 
+        .wk-open{position:relative;z-index:2;max-width:900px;margin-bottom:2rem}
+        .wk-open-left{display:flex;flex-direction:column}
         .wk-kicker{font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--copper)}
-
-        .wk-open{position:relative;z-index:2;max-width:900px;margin-bottom:3rem}
-        .wk-h1{margin-top:1.4rem;font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.8rem,8vw,7rem);line-height:.88;letter-spacing:-.04em}
+        .wk-h1{margin-top:.9rem;font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.4rem,5.5vw,4.8rem);line-height:.92;letter-spacing:-.04em}
         .wk-mask{display:block;overflow:hidden}
         .wk-mask>span{display:block;transform:translateY(112%);animation:wk-maskup 1s cubic-bezier(.16,1,.3,1) forwards}
         .wk-mask:nth-child(2)>span{animation-delay:.12s}
@@ -150,14 +158,14 @@ export default function Works() {
         .wk-pill::after{content:"";position:absolute;top:18%;left:20%;width:22%;height:28%;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(1.5px);pointer-events:none}
         body.dark .wk-pill::after{background:rgba(255,255,255,.2)}
 
-        .wk-lede{margin-top:1.6rem;max-width:32rem;font-size:clamp(.95rem,1.6vw,1.05rem);line-height:1.7;color:var(--ink-soft)}
+        .wk-lede{margin-top:1.2rem;max-width:32rem;font-size:clamp(.92rem,1.2vw,1.02rem);line-height:1.6;color:var(--ink-soft)}
 
-        .wk-hairline{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid var(--rule);margin-top:2.5rem;padding-top:1.2rem;font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--ink-faint)}
+        .wk-hairline{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid var(--rule);margin-top:1.75rem;padding-top:1rem;font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--ink-faint)}
 
-        .wk-filter{position:relative;z-index:2;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:1.1rem 0;margin-bottom:2.75rem}
+        .wk-filter{position:relative;z-index:2;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:0.9rem 0;margin-bottom:2rem}
 
         .wk-grid-sec{position:relative;z-index:2}
-        .wk-gridhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
+        .wk-gridhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
 
         .wk-grid{display:grid;grid-template-columns:1fr;gap:1.5rem}
         @media (min-width:768px){.wk-grid{grid-template-columns:repeat(2,1fr);gap:1.75rem}}
@@ -165,6 +173,13 @@ export default function Works() {
 
         @media (prefers-reduced-motion:reduce){
           .wk-mask>span,.wk-bubble{animation-duration:.01ms!important;animation-iteration-count:1!important}
+        }
+        @media (min-width: 1024px){
+          .wk-open{max-width:1400px;display:grid;grid-template-columns:1.2fr 0.8fr;align-items:end;gap:3rem;margin-bottom:2.25rem}
+          .wk-lede{max-width:34ch;margin-top:0;margin-bottom:.4rem}
+          .wk-hairline{grid-column:1 / -1;margin-top:1.75rem}
+          .wk-filter{max-width:1400px}
+          .wk-grid-sec{max-width:1400px}
         }
       `}</style>
     </div>

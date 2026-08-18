@@ -328,9 +328,9 @@ html.lenis, html.lenis body {
 .values-line {
   max-width: 1400px;
   font-family: var(--font-serif);
-  font-size: clamp(2.7rem, 7.4vw, 8rem);
-  line-height: 0.86;
-  letter-spacing: -0.05em;
+  font-size: clamp(2.4rem, 4.8vw, 5rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
   color: #fff;
 }
 
@@ -750,4 +750,34 @@ html.lenis, html.lenis body {
   align-items: center;
   animation: marquee-scroll 18s linear infinite;
   will-change: transform;
+}
+
+/* ==========================================================================
+   Desktop-only overrides (Mobile <1024px is completely frozen and untouched)
+   ========================================================================== */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1400px;
+    margin-inline: auto;
+    padding-inline: clamp(1.5rem, 4vw, 3rem);
+  }
+  .h1, .fan-h1, .pj-h1, .sw-h1 {
+    font-size: clamp(2.6rem, 6.5vw, 6.5rem);
+  }
+  .pat {
+    opacity: 0.10;
+  }
+  .pill {
+    font-size: 0.9em;
+  }
+
+  /* Protocol Showcase: Serpentine desktop alignment with labels above up-nodes and below down-nodes */
+  .protocol-w-1 { left: 12%; top: 34%; }
+  .protocol-p-1 { left: 12%; top: 12%; text-align: left; }
+  .protocol-w-2 { left: 40%; top: 58%; }
+  .protocol-p-2 { left: 40%; top: 72%; text-align: left; }
+  .protocol-w-3 { left: 68%; top: 34%; }
+  .protocol-p-3 { left: 68%; top: 12%; text-align: left; }
+  .protocol-w-4 { left: 92%; top: 58%; }
+  .protocol-p-4 { right: 2%; top: 72%; text-align: right; }
 }

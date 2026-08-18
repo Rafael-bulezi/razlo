@@ -26,6 +26,23 @@ const PHASES: Phase[] = [
 
 const AT = [0.02, 0.25, 0.5, 0.74, 0.95];
 
+const DESKTOP_POINTS = [
+  { x: 10, y: 32 },
+  { x: 30, y: 64 },
+  { x: 50, y: 32 },
+  { x: 70, y: 64 },
+  { x: 90, y: 32 },
+] as const;
+
+function smoothPath(pts: readonly { x: number; y: number }[]): string {
+  let d = `M ${pts[0].x} ${pts[0].y}`;
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], mx = (a.x + b.x) / 2;
+    d += ` C ${mx} ${a.y}, ${mx} ${b.y}, ${b.x} ${b.y}`;
+  }
+  return d;
+}
+
 export default function Protocol() {
   useDocumentMeta('Protocol — Razlo Digital Studio', 'A clear five-phase process for creating focused and distinctive digital work.');
 
@@ -148,9 +165,9 @@ export default function Protocol() {
             <div className="pp-bubble pb-4" /><div className="pp-bubble pb-5" />
 
             <div className="pp-map pp-map-d">
-              <svg viewBox="0 0 1400 900" preserveAspectRatio="none">
-                <path className="pp-track" d="M 168 90 C 520 130 880 190 1176 270 C 880 370 540 400 224 468 C 540 560 880 580 1176 648 C 940 740 760 780 700 810" />
-                <path className="pp-route" ref={routeDRef} d="M 168 90 C 520 130 880 190 1176 270 C 880 370 540 400 224 468 C 540 560 880 580 1176 648 C 940 740 760 780 700 810" />
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path className="pp-track" d={smoothPath(DESKTOP_POINTS)} />
+                <path className="pp-route" ref={routeDRef} d={smoothPath(DESKTOP_POINTS)} />
               </svg>
             </div>
             <div className="pp-map pp-map-m">
@@ -245,7 +262,7 @@ export default function Protocol() {
         .pp-open-inner{position:relative;z-index:2;max-width:1500px;margin:0 auto}
         .pp-open-grid{display:grid;gap:2.5rem;align-items:end}
         @media (min-width:1024px){.pp-open-grid{grid-template-columns:1fr .62fr}}
-        .pp-h1{margin-top:1.2rem;font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.8rem,7.5vw,7rem);line-height:.9;letter-spacing:-.04em}
+        .pp-h1{margin-top:1.2rem;font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.6rem,5vw,4.8rem);line-height:.95;letter-spacing:-.035em}
         .pp-h1 em{font-style:italic;color:var(--copper)}
         .pp-mask{display:block;overflow:hidden}
         .pp-mask>span{display:block;transform:translateY(112%);animation:pp-maskup 1s cubic-bezier(.16,1,.3,1) forwards}
@@ -261,6 +278,7 @@ export default function Protocol() {
         .pp-wrap{height:420vh}
         @media (max-width:820px){.pp-wrap{height:340vh}}
         .pp-stage{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;padding:clamp(1.2rem,4vh,2.4rem) clamp(1.25rem,4vw,3rem) 0;max-width:1500px;margin:0 auto;overflow:hidden}
+        @media (min-width:1024px){.pp-stage{padding-top:clamp(2rem,5vh,3.5rem);padding-bottom:clamp(1.5rem,3vh,2.5rem)}}
         .pp-stage-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.6rem}
         .pp-count{font-family:"Noto Serif",serif;font-style:italic;font-size:1rem;color:var(--copper)}
         .pp-map-area{position:relative;flex:1;min-height:0}
@@ -307,6 +325,26 @@ export default function Protocol() {
           .w-3{left:22%;top:48%}.p-3{left:40%;top:44%;text-align:left}
           .w-4{left:80%;top:68%}.p-4{left:6%;top:63%;text-align:left}
           .w-5{left:50%;top:88%}.p-5{left:22%;margin-left:0;top:80%;text-align:left}
+        }
+        @media (min-width:1024px){
+          /* Constrain each phase card to its own column so up-nodes never collide */
+          .pp-phase{max-width:17vw;min-width:140px}
+          .pp-phase-title{font-size:clamp(1rem,1.6vw,1.4rem)}
+
+          /* Node positions on the serpentine */
+          .w-1{left:10%;top:32%}
+          .w-2{left:30%;top:64%}
+          .w-3{left:50%;top:32%}
+          .w-4{left:70%;top:64%}
+          .w-5{left:90%;top:32%}
+
+          /* Labels: up-nodes (01,03,05) sit ABOVE their node; down-nodes (02,04) sit BELOW */
+          /* Each is anchored to the same x as its node, trimmed to its 20vw column */
+          .p-1{left:2%;top:6%;text-align:left;margin-left:0}
+          .p-2{left:22%;top:73%;text-align:left;margin-left:0}
+          .p-3{left:42%;top:6%;text-align:left;margin-left:0}
+          .p-4{left:62%;top:73%;text-align:left;margin-left:0}
+          .p-5{left:auto;right:2%;top:6%;text-align:right;margin-left:0}
         }
 
         /* closing */

@@ -7,7 +7,7 @@ import MediaGallery from '../MediaGallery';
 import MediaCarousel from '../MediaCarousel';
 import CustomVideo from '../CustomVideo';
 import { YouTubeEmbed } from '../YouTubeEmbed';
-import { isYouTubeUrl } from '../../data/projects';
+import { isYouTubeUrl, convertToGoogleDriveEmbed, isGoogleDriveUrl } from '../../data/projects';
 
 interface ProjectDetailProps {
   project: Project;
@@ -42,6 +42,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
 
   const hasVideo = !!project.videoUrl;
   const isYT = hasVideo && isYouTubeUrl(project.videoUrl!);
+  const isGDrive = hasVideo && isGoogleDriveUrl(project.videoUrl!);
   const hasGallery = !!project.gallery?.length;
 
   return (
@@ -53,8 +54,8 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Media Area - takes up full height on desktop, top portion on mobile */}
-      <div className="relative w-full h-[55vh] md:h-full md:w-[65%] lg:w-[70%] bg-[#0A0A0A] flex flex-col">
-        <div className="flex-1 w-full h-full relative overflow-hidden">
+      <div className="relative w-full h-[50vh] md:h-full md:w-[62%] lg:w-[65%] bg-[#080808] flex items-center justify-center p-3 sm:p-6 md:p-8">
+        <div className="flex-1 w-full h-full relative overflow-hidden flex items-center justify-center">
           {hasVideo ? (
             isYT ? (
               <YouTubeEmbed
@@ -62,30 +63,41 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({
                 title={project.title}
                 className="w-full h-full"
               />
+            ) : isGDrive ? (
+              <div className="relative w-full h-full">
+                <iframe
+                  src={convertToGoogleDriveEmbed(project.videoUrl!)}
+                  title={project.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full border-0"
+                />
+              </div>
             ) : (
               <CustomVideo
                 src={project.videoUrl!}
                 poster={project.image}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             )
           ) : hasGallery ? (
             <MediaCarousel
               images={project.gallery!}
-              className="w-full h-full rounded-none"
+              className="w-full h-full rounded-xl bg-black/40"
+              objectFit="contain"
             />
           ) : (
             <img
               src={project.image}
               alt={project.title}
-              className="w-full h-full object-cover"
+              className="max-h-full max-w-full w-auto h-auto object-contain rounded-xl shadow-2xl"
             />
           )}
         </div>
       </div>
 
       {/* Content Area */}
-      <div className="relative w-full h-[45vh] md:h-full md:w-[35%] lg:w-[30%] flex flex-col bg-[#F5F3EF] dark:bg-noir-surface shadow-[-20px_0_40px_rgba(0,0,0,0.05)] dark:shadow-[-20px_0_40px_rgba(0,0,0,0.3)]">
+      <div className="relative w-full h-[50vh] md:h-full md:w-[38%] lg:w-[35%] flex flex-col bg-[#F5F3EF] dark:bg-noir-surface shadow-[-20px_0_40px_rgba(0,0,0,0.05)] dark:shadow-[-20px_0_40px_rgba(0,0,0,0.3)]">
         {/* Scrollable text content */}
         <div className="flex-1 overflow-y-auto px-6 py-8 md:p-10 lg:p-12 pb-32 hide-scrollbar">
           <div className="flex flex-col gap-6">

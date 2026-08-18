@@ -8,9 +8,10 @@ import { cn } from '../lib/utils';
 interface MediaCarouselProps {
   images: string[];
   className?: string;
+  objectFit?: 'cover' | 'contain';
 }
 
-const MediaCarousel: React.FC<MediaCarouselProps> = ({ images, className = '' }) => {
+const MediaCarousel: React.FC<MediaCarouselProps> = ({ images, className = '', objectFit = 'contain' }) => {
   const [current, setCurrent] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -29,7 +30,7 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ images, className = '' })
       <div className={cn('relative group overflow-hidden rounded-xl', className)}>
         <motion.div
           key={current}
-          className="h-full w-full cursor-grab active:cursor-grabbing"
+          className="h-full w-full cursor-grab active:cursor-grabbing flex items-center justify-center"
           drag={images.length > 1 ? 'x' : false}
           dragConstraints={{ left: -100, right: 100 }}
           dragElastic={0.6}
@@ -43,7 +44,8 @@ const MediaCarousel: React.FC<MediaCarouselProps> = ({ images, className = '' })
             src={images[current]}
             alt={`Gallery image ${current + 1}. Swipe to browse`}
             className="h-full w-full select-none"
-            containerClassName="h-full w-full"
+            containerClassName="h-full w-full flex items-center justify-center"
+            objectFit={objectFit}
           />
         </motion.div>
         {/* Controls */}

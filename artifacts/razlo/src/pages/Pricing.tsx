@@ -114,14 +114,18 @@ export default function Pricing() {
 
         {/* ============ OPENING ============ */}
         <section className="pr-open">
-          <p className="pr-kicker">Razlo.digital / Investment</p>
-          <h1 className="pr-h1">
-            <span className="pr-mask"><span>Simple, <span className="pr-pill">transparent</span></span></span>
-            <span className="pr-mask"><span>pricing.</span></span>
-          </h1>
-          <p className="pr-lede">
-            Clear pricing built for growing brands — no hidden fees, no surprises. Plans start from $100 for brand identity and $130 for a professional landing page, and scale to full website and production packages.
-          </p>
+          <div className="pr-open-left">
+            <p className="pr-kicker">Razlo.digital / Investment</p>
+            <h1 className="pr-h1">
+              <span className="pr-mask"><span>Simple, <span className="pr-pill">transparent</span></span></span>
+              <span className="pr-mask"><span>pricing.</span></span>
+            </h1>
+          </div>
+          <div className="pr-open-right">
+            <p className="pr-lede">
+              Clear pricing built for growing brands — no hidden fees, no surprises. Plans start from $100 for brand identity and $130 for a professional landing page, and scale to full website and production packages.
+            </p>
+          </div>
           <div className="pr-hairline">
             <span>05 Categories</span>
             <span>Fixed pricing</span>
@@ -158,55 +162,56 @@ export default function Pricing() {
           </div>
         </div>
 
-        {/* ============ PLANS ============ */}
+        {/* ============ MAIN STACK / CONTENT ============ */}
         <AnimatePresence mode="wait">
           {category === 'Partnership' ? (
-            <motion.section
+            <motion.div
               key="partnership"
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 30 }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.45 }}
               className="pr-partner"
             >
               <div className="pr-partner-main">
-                <span className="pr-partner-rule" />
-                <h2>The <span className="pr-pill">partner</span> plan</h2>
-                <p className="pr-partner-sub">No upfront cost. We build together, we grow together.</p>
+                <div className="pr-partner-rule" />
+                <h2>Equity &amp; revenue-share partnerships.</h2>
+                <p className="pr-partner-sub">For early-stage startups and high-growth brands</p>
                 <p className="pr-partner-body">
-                  The Partner Plan is Razlo.digital&apos;s equity-based option for founders and business owners across Angola who have a great idea but limited startup budget. We build your complete digital presence — website, brand identity, and launch content — at no upfront cost, in exchange for an agreed equity share or revenue commission. We take on two to three partner projects per quarter.
+                  We invest our design, engineering, and storytelling power in exchange for equity or shared upside. We only take 2–3 partner brands per cohort to ensure deep focus.
                 </p>
-                <Button variant="copper" size="md" onClick={() => navigate('/contact?plan=Partner&category=Partnership')}>
-                  Apply for partnership <ArrowUpRight size={14} />
+                <Button variant="copper" size="lg" onClick={() => navigate('/contact?category=Partnership')}>
+                  Apply for partnership <ArrowUpRight size={15} />
                 </Button>
               </div>
 
               <div className="pr-partner-cards">
                 <div className="pr-partner-card">
-                  <h3>What we build for you</h3>
+                  <h3>What we bring</h3>
                   <ul>
-                    {['Full website (Professional tier equivalent)', 'Complete brand identity system', 'Launch content pack (AI media)', '6-month maintenance & consulting'].map((i) => (
-                      <li key={i}><span className="pr-partner-mark">→</span>{i}</li>
-                    ))}
+                    <li><span className="pr-partner-mark">✦</span> Full digital design &amp; branding</li>
+                    <li><span className="pr-partner-mark">✦</span> Production-grade React/Next.js code</li>
+                    <li><span className="pr-partner-mark">✦</span> AI content engine &amp; video strategy</li>
+                    <li><span className="pr-partner-mark">✦</span> Ongoing optimization &amp; maintenance</li>
                   </ul>
                 </div>
                 <div className="pr-partner-card">
-                  <h3>What we ask in return</h3>
+                  <h3>Who qualifies</h3>
                   <ul>
-                    {['Equity stake: 5–15% negotiated upfront', 'OR revenue share: 8–20% of monthly revenue', 'Business legally registered in Angola'].map((i) => (
-                      <li key={i}><span className="pr-partner-mark">→</span>{i}</li>
-                    ))}
+                    <li><span className="pr-partner-mark">✦</span> Clear market validation or initial traction</li>
+                    <li><span className="pr-partner-mark">✦</span> Dedicated founding team in Angola or remote</li>
+                    <li><span className="pr-partner-mark">✦</span> High-growth digital or consumer model</li>
                   </ul>
                 </div>
               </div>
-            </motion.section>
+            </motion.div>
           ) : (
             <motion.div
               key={category}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.45 }}
               className="pr-stack-wrap"
             >
               <SwipeStack
@@ -252,7 +257,7 @@ export default function Pricing() {
           --copper:#FFB692;--copper-light:#FFB692;
           --rule:rgba(255,255,255,.12);--glass-border:rgba(255,255,255,.18);--glass-bg:rgba(255,255,255,.05);--glass-hi:rgba(255,255,255,.18)}
 
-        .pr-main{position:relative;max-width:1500px;margin:0 auto;padding:clamp(7rem,16vh,10rem) clamp(1.25rem,4vw,3rem) 3rem;overflow:hidden}
+        .pr-main{position:relative;max-width:1500px;margin:0 auto;padding:clamp(5rem,9vh,6.5rem) clamp(1.25rem,4vw,3rem) 3rem;overflow:hidden}
 
         .pr-ambient{position:absolute;inset:0;pointer-events:none;overflow:hidden}
         .pr-ambient::before,.pr-ambient::after{content:"";position:absolute;border-radius:50%;filter:blur(80px)}
@@ -270,10 +275,10 @@ export default function Pricing() {
         .pbb-3{bottom:22%;right:10%;width:26px;height:26px;border-color:rgba(255,182,146,.45);background:linear-gradient(135deg,rgba(255,182,146,.28),rgba(255,255,255,.08));animation:pr-drift 8s ease-in-out infinite alternate}
         @keyframes pr-drift{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-18px) rotate(3deg)}}
 
+        .pr-open{position:relative;z-index:2;max-width:900px;margin-bottom:2rem}
+        .pr-open-left{display:flex;flex-direction:column}
         .pr-kicker{font-size:10px;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:var(--copper)}
-
-        .pr-open{position:relative;z-index:2;max-width:900px;margin-bottom:3.5rem}
-        .pr-h1{margin-top:1.4rem;font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.8rem,8vw,7rem);line-height:.88;letter-spacing:-.04em}
+        .pr-h1{margin-top:.9rem;font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.4rem,5.5vw,4.8rem);line-height:.92;letter-spacing:-.04em}
         .pr-h1 em{font-style:italic;color:var(--copper)}
         .pr-mask{display:block;overflow:hidden}
         .pr-mask>span{display:block;transform:translateY(112%);animation:pr-maskup 1s cubic-bezier(.16,1,.3,1) forwards}
@@ -284,25 +289,25 @@ export default function Pricing() {
         .pr-pill::after{content:"";position:absolute;top:18%;left:20%;width:22%;height:28%;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(1.5px);pointer-events:none}
         body.dark .pr-pill::after{background:rgba(255,255,255,.2)}
 
-        .pr-lede{margin-top:1.6rem;max-width:44rem;font-size:clamp(.95rem,1.6vw,1.05rem);line-height:1.7;color:var(--ink-soft)}
+        .pr-lede{margin-top:1.2rem;max-width:38ch;font-size:clamp(.92rem,1.2vw,1.02rem);line-height:1.6;color:var(--ink-soft)}
 
-        .pr-hairline{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid var(--rule);margin-top:2.5rem;padding-top:1.2rem;font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--ink-faint)}
+        .pr-hairline{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid var(--rule);margin-top:1.75rem;padding-top:1rem;font-size:10px;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:var(--ink-faint)}
 
         /* controls */
-        .pr-controls{position:relative;z-index:2;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1.5rem;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid var(--rule)}
+        .pr-controls{position:relative;z-index:2;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--rule)}
         .pr-cats{display:flex;flex-wrap:wrap;gap:.5rem}
-        .pr-cat{font:inherit;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:.7rem 1.2rem;border-radius:999px;border:1px solid var(--rule);background:transparent;color:var(--ink-faint);cursor:pointer;transition:all .25s}
+        .pr-cat{font:inherit;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:.65rem 1.15rem;border-radius:999px;border:1px solid var(--rule);background:transparent;color:var(--ink-faint);cursor:pointer;transition:all .25s}
         .pr-cat:hover{color:var(--ink);border-color:var(--ink-faint)}
         .pr-cat-on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
 
-        .pr-currency{display:flex;align-items:center;gap:.9rem;padding:.5rem 1rem;border-radius:999px;border:1px solid var(--rule);background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+        .pr-currency{display:flex;align-items:center;gap:.9rem;padding:.45rem .95rem;border-radius:999px;border:1px solid var(--rule);background:var(--glass-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
         .pr-cur-label{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);transition:color .25s}
         .pr-cur-on{color:var(--ink)}
         .pr-toggle{position:relative;width:40px;height:20px;border-radius:999px;border:0;background:rgba(14,14,14,.1);cursor:pointer;padding:3px}
         body.dark .pr-toggle{background:rgba(255,255,255,.1)}
         .pr-toggle-knob{display:block;width:14px;height:14px;border-radius:50%;background:var(--copper);transition:transform .35s cubic-bezier(.16,1,.3,1)}
 
-        /* cards (rendered inside SwipeStack's glass shell) */
+        /* cards */
         .pr-card-inner{display:flex;flex-direction:column;min-height:380px;justify-content:space-between}
         .pr-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
         .pr-card-kicker{font-size:10px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:var(--copper)}
@@ -352,6 +357,12 @@ export default function Pricing() {
 
         @media (prefers-reduced-motion:reduce){
           .pr-mask>span,.pr-bubble{animation-duration:.01ms!important;animation-iteration-count:1!important}
+        }
+        @media (min-width: 1024px){
+          .pr-open{max-width:1400px;display:grid;grid-template-columns:1.2fr 0.8fr;align-items:end;gap:3rem;margin-bottom:2.25rem;min-height:55vh}
+          .pr-lede{max-width:36ch;margin-top:0;margin-bottom:.4rem}
+          .pr-hairline{grid-column:1 / -1;margin-top:1.75rem}
+          .pr-controls{max-width:1400px}
         }
       `}</style>
     </div>

@@ -77,7 +77,7 @@ const CustomVideo: React.FC<CustomVideoProps> = ({
         loop={loop}
         muted={isMuted}
         playsInline
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
       />
       {/* Controls overlay */}
       <div

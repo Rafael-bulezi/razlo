@@ -6,7 +6,7 @@ import { CurtainProvider } from './components/Curtain';
 import Home from './pages/Home';
 import Works from './pages/Works';
 import About from './pages/About';
-import Protocol from './pages/Protocol';
+import ProtocolPage from './pages/ProtocolPage';
 import Contact from './pages/Contact';
 import Pricing from './pages/Pricing';
 
@@ -39,7 +39,7 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/works" element={<Works />} />
           <Route path="/about" element={<About />} />
-          <Route path="/protocol" element={<Protocol />} />
+          <Route path="/protocol" element={<ProtocolPage />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/pricing" element={<Pricing />} />
         </Routes>

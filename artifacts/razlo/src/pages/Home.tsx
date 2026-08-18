@@ -2,7 +2,7 @@ import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import Values from '../components/Values';
 import Projects from '../components/Projects';
-import ProtocolShowcase from '../components/ProtocolShowcase';
+import ProcessShowcase from '../components/ProcessShowcase';
 import Footer from '../components/Footer';
 import { useDocumentMeta } from '../lib/useDocumentMeta';
 
@@ -18,7 +18,7 @@ const Home = () => {
       <div className="dark"><Hero /></div>
       <Values />
       <div className="dark"><Projects /></div>
-      <div className="dark"><ProtocolShowcase /></div>
+      <div className="dark"><ProcessShowcase /></div>
       <Footer />
     </>
   );

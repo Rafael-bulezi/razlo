@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import { useCurtain } from './Curtain';
-import { PROJECTS } from '../data/projects';
+import MediaCarousel from './MediaCarousel';
+import { PROJECTS, isGoogleDriveUrl, convertToGoogleDriveEmbed, isYouTubeUrl, convertToYouTubeEmbed } from '../data/projects';
 
 /* per-index art direction for the fan blades */
 const FOCALS = ['50% 45%', '70% 40%', '30% 60%', '40% 70%'];
@@ -143,7 +144,31 @@ export default function Projects() {
 
               <div className="lb-media">
                 {active.videoUrl ? (
-                  <video controls playsInline poster={active.image} src={active.videoUrl} />
+                  isGoogleDriveUrl(active.videoUrl) ? (
+                    <div className="relative w-full aspect-video">
+                      <iframe
+                        src={convertToGoogleDriveEmbed(active.videoUrl)}
+                        title={active.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full border-0"
+                      />
+                    </div>
+                  ) : isYouTubeUrl(active.videoUrl) ? (
+                    <div className="relative w-full aspect-video">
+                      <iframe
+                        src={convertToYouTubeEmbed(active.videoUrl)}
+                        title={active.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full border-0"
+                      />
+                    </div>
+                  ) : (
+                    <video controls playsInline poster={active.image} src={active.videoUrl} />
+                  )
+                ) : active.gallery && active.gallery.length > 0 ? (
+                  <MediaCarousel images={active.gallery} className="w-full max-h-[60svh] aspect-[16/10]" />
                 ) : (
                   <img src={active.image} alt={`${active.title} — project visual`} />
                 )}
@@ -178,7 +203,7 @@ export default function Projects() {
 
       <style>{`
         .fan-sec{--surface:#F5F3EF;--ink:#0E0E0E;--ink-soft:rgba(14,14,14,.6);--ink-faint:rgba(14,14,14,.42);--copper:#B15D2E;--copper-light:#FFB692;--rule:rgba(14,14,14,.12);--glass-bg:rgba(255,255,255,.55);--glass-hi:rgba(255,255,255,.7);--noir:#141110;--cb:cubic-bezier(.22,1,.3,1);
-          position:relative;max-width:1200px;margin:0 auto;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(.9rem,2.6vh,1.8rem);padding:4.5rem 1rem 2.4rem;overflow:hidden}
+          position:relative;max-width:1200px;margin:0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(.8rem,1.8vh,1.3rem);padding:clamp(4rem,7vh,5.5rem) 1rem clamp(2rem,4vh,3rem);overflow:hidden}
         body.dark .fan-sec{--surface:#131313;--ink:#FFF;--ink-soft:rgba(255,255,255,.6);--ink-faint:rgba(255,255,255,.45);--copper:#FFB692;--copper-light:#FFB692;--rule:rgba(255,255,255,.12);--glass-bg:rgba(255,255,255,.06);--glass-hi:rgba(255,255,255,.18);--noir:#0B0908}
         .fan-sec .pat{position:absolute;inset:-300px;z-index:0;pointer-events:none;background:var(--ink);opacity:.14;
           -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260'%3E%3Cg fill='none' stroke='%23000' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg opacity='.85' transform='translate(49.6 49.6) scale(1.2)'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18'/%3E%3C/g%3E%3Cg opacity='.85' transform='translate(181.6 49.6) scale(1.2)'%3E%3Crect x='3' y='5' width='18' height='14' rx='2'/%3E%3Cpath d='M7 5v14M17 5v14M3 10h4M3 14h4M17 10h4M17 14h4'/%3E%3C/g%3E%3Cg opacity='.85' transform='translate(49.6 181.6) scale(1.2)'%3E%3Cpath d='M17 3l4 4L8 20l-5 1 1-5z'/%3E%3C/g%3E%3Cg opacity='.85' transform='translate(181.6 181.6) scale(1.2)'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M10 8l6 4-6 4z'/%3E%3C/g%3E%3Cg opacity='.6' transform='translate(117.6 117.6) scale(1.2)'%3E%3Cpath d='M12 2v20M2 12h20M5 5l14 14M19 5L5 19'/%3E%3C/g%3E%3C/g%3E%3Cg fill='%23000' opacity='.45'%3E%3Ccircle cx='0' cy='0' r='2'/%3E%3Ccircle cx='130' cy='0' r='2'/%3E%3Ccircle cx='260' cy='0' r='2'/%3E%3Ccircle cx='0' cy='130' r='2'/%3E%3Ccircle cx='260' cy='130' r='2'/%3E%3Ccircle cx='0' cy='260' r='2'/%3E%3Ccircle cx='130' cy='260' r='2'/%3E%3Ccircle cx='260' cy='260' r='2'/%3E%3C/g%3E%3Cg fill='%23000' opacity='.5'%3E%3Cpath d='M130 22l5 5-5 5-5-5z'/%3E%3Cpath d='M130 228l5 5-5 5-5-5z'/%3E%3Cpath d='M22 130l5 5-5 5-5-5z'/%3E%3Cpath d='M228 130l5 5-5 5-5-5z'/%3E%3C/g%3E%3C/svg%3E");
@@ -190,23 +215,23 @@ export default function Projects() {
 
         .fan-head{position:relative;z-index:1;text-align:center;max-width:640px;will-change:transform,opacity}
         .pj-k{font-size:10px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--copper)}
-        .pj-h1{font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.6rem,8.5vw,5.2rem);line-height:.9;letter-spacing:-.045em;margin-top:1.1rem;color:var(--ink)}
+        .pj-h1{font-family:"Noto Serif",serif;font-weight:400;font-size:clamp(2.2rem,5vw,3.6rem);line-height:.92;letter-spacing:-.04em;margin-top:.75rem;color:var(--ink)}
         .pj-pill{position:relative;display:inline-block;font-family:"Noto Serif",serif;font-style:italic;font-weight:500;color:var(--copper);padding:.06em .5em .16em;border-radius:999px;border:1px solid rgba(255,182,146,.45);background:var(--glass-bg);backdrop-filter:blur(6px);box-shadow:0 8px 22px rgba(177,93,46,.12),inset 0 1px 0 var(--glass-hi)}
         .pj-pill::after{content:"";position:absolute;top:16%;left:18%;width:20%;height:26%;border-radius:50%;background:rgba(255,255,255,.55);filter:blur(1.5px)}
-        .pj-lede{margin:.9rem auto 0;max-width:34ch;font-size:.95rem;line-height:1.5;color:var(--ink-soft)}
+        .pj-lede{margin:.65rem auto 0;max-width:34ch;font-size:.9rem;line-height:1.5;color:var(--ink-soft)}
 
         .fan-lift{position:relative;z-index:1;will-change:transform,opacity}
-        .fan{--cw:clamp(170px,44vw,260px);position:relative;width:min(96vw,1060px);height:calc(var(--cw)*1.8);margin-top:.4rem;animation:pj-sway 10s ease-in-out infinite alternate}
-        @media(min-width:900px){.fan{--cw:clamp(220px,23vw,300px);height:calc(var(--cw)*1.72)}}
-        @keyframes pj-sway{from{transform:rotate(-2.4deg)}to{transform:rotate(-1.2deg)}}
-        .fan::before{content:"";position:absolute;left:50%;bottom:-16px;width:10px;height:10px;border-radius:50%;background:var(--copper);transform:translateX(-50%);box-shadow:0 0 0 6px rgba(177,93,46,.14),0 0 24px rgba(177,93,46,.5)}
-        .fan::after{content:"";position:absolute;left:50%;bottom:-2px;width:min(78%,560px);height:26%;transform:translateX(-50%);border-top:1px solid var(--rule);border-radius:50%;pointer-events:none}
+        .fan{--cw:clamp(170px,44vw,240px);position:relative;width:min(96vw,1060px);height:calc(var(--cw)*1.8);margin-top:.25rem;animation:pj-sway 10s ease-in-out infinite alternate}
+        @media(min-width:900px){.fan{--cw:clamp(160px,15vw,210px);height:calc(var(--cw)*1.74)}}
+        @keyframes pj-sway{from{transform:rotate(-2deg)}to{transform:rotate(-1deg)}}
+        .fan::before{content:"";position:absolute;left:50%;bottom:-14px;width:8px;height:8px;border-radius:50%;background:var(--copper);transform:translateX(-50%);box-shadow:0 0 0 5px rgba(177,93,46,.14),0 0 20px rgba(177,93,46,.5)}
+        .fan::after{content:"";position:absolute;left:50%;bottom:-2px;width:min(78%,520px);height:24%;transform:translateX(-50%);border-top:1px solid var(--rule);border-radius:50%;pointer-events:none}
 
-        .fcard{position:absolute;left:50%;top:0;width:var(--cw);aspect-ratio:5/7;border-radius:1.2rem;overflow:hidden;background:var(--noir);box-shadow:0 30px 70px rgba(16,12,8,.28);transform-origin:50% 240%;will-change:transform;transform:translateX(-50%) translateY(var(--ty)) rotate(var(--a));transition:transform .9s var(--cb) var(--d),opacity .6s ease var(--d),box-shadow .5s ease,filter .5s ease;cursor:pointer;border:0;padding:0}
-        .fcard:nth-child(1){--a:-22deg;--ha:-5deg;--ty:14px;--d:.05s}
-        .fcard:nth-child(2){--a:-7deg;--ha:-2.5deg;--ty:-6px;--d:.15s}
-        .fcard:nth-child(3){--a:7deg;--ha:2.5deg;--ty:-6px;--d:.25s}
-        .fcard:nth-child(4){--a:22deg;--ha:5deg;--ty:14px;--d:.35s}
+        .fcard{position:absolute;left:50%;top:0;width:var(--cw);aspect-ratio:5/7;border-radius:1rem;overflow:hidden;background:var(--noir);box-shadow:0 24px 60px rgba(16,12,8,.24);transform-origin:50% 240%;will-change:transform;transform:translateX(-50%) translateY(var(--ty)) rotate(var(--a));transition:transform .9s var(--cb) var(--d),opacity .6s ease var(--d),box-shadow .5s ease,filter .5s ease;cursor:pointer;border:0;padding:0}
+        .fcard:nth-child(1){--a:-20deg;--ha:-5deg;--ty:12px;--d:.05s}
+        .fcard:nth-child(2){--a:-6.5deg;--ha:-2.5deg;--ty:-4px;--d:.15s}
+        .fcard:nth-child(3){--a:6.5deg;--ha:2.5deg;--ty:-4px;--d:.25s}
+        .fcard:nth-child(4){--a:20deg;--ha:5deg;--ty:12px;--d:.35s}
         @media(max-width:640px){
           .fcard{transform-origin:50% 200%}
           .fcard:nth-child(1){--a:-15deg;--ty:10px}
@@ -214,16 +239,16 @@ export default function Projects() {
           .fcard:nth-child(3){--a:5deg;--ty:-4px}
           .fcard:nth-child(4){--a:15deg;--ty:10px}
         }
-        .fcard:hover{transform:translateX(-50%) translateY(calc(var(--ty) - 20px)) rotate(calc(var(--a) + var(--ha))) scale(1.045);z-index:30;box-shadow:0 46px 100px rgba(16,12,8,.4)}
+        .fcard:hover{transform:translateX(-50%) translateY(calc(var(--ty) - 18px)) rotate(calc(var(--a) + var(--ha))) scale(1.05);z-index:30;box-shadow:0 36px 90px rgba(16,12,8,.38)}
         .fcard:focus-visible{outline:2px solid var(--copper);outline-offset:4px}
         .fcard img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--cb)}
         .fcard:hover img{transform:scale(1.06)}
         .fcard .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,8,6,.85) 0%,rgba(10,8,6,.15) 45%,transparent 65%)}
-        .fcard .num{position:absolute;top:.9rem;left:.9rem;font-family:"Noto Serif",serif;font-style:italic;font-weight:500;font-size:1.1rem;color:var(--copper);padding:.2em .65em .3em;border-radius:999px;background:rgba(245,243,239,.9);box-shadow:0 4px 12px rgba(16,12,8,.18)}
+        .fcard .num{position:absolute;top:.75rem;left:.75rem;font-family:"Noto Serif",serif;font-style:italic;font-weight:500;font-size:.9rem;color:var(--copper);padding:.15em .55em .25em;border-radius:999px;background:rgba(245,243,239,.9);box-shadow:0 3px 10px rgba(16,12,8,.16)}
         body.dark .fcard .num{background:rgba(20,17,16,.85)}
-        .fcard .nm{position:absolute;left:1.1rem;right:1rem;bottom:1.8rem;font-family:"Noto Serif",serif;font-weight:500;font-size:clamp(1.05rem,4.6vw,1.5rem);letter-spacing:.03em;text-transform:uppercase;color:#F5F3EF;line-height:1.05}
-        .fcard .ct{position:absolute;left:1.15rem;bottom:.8rem;font-size:8.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:rgba(245,243,239,.6)}
-        .fan.pre .fcard{transform:translateX(-50%) translateY(90px) rotate(0deg) scale(.9);opacity:0}
+        .fcard .nm{position:absolute;left:.85rem;right:.85rem;bottom:1.5rem;font-family:"Noto Serif",serif;font-weight:500;font-size:clamp(.85rem,1.2vw,1.05rem);letter-spacing:.02em;text-transform:uppercase;color:#F5F3EF;line-height:1.1}
+        .fcard .ct{position:absolute;left:.85rem;bottom:.65rem;font-size:7.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(245,243,239,.6)}
+        .fan.pre .fcard{transform:translateX(-50%) translateY(70px) rotate(0deg) scale(.9);opacity:0}
         body.lb-open .fcard:not(:hover){filter:saturate(.6) brightness(.85)}
         .fan-hint{position:relative;z-index:1;font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-faint)}
 
@@ -260,6 +285,16 @@ export default function Projects() {
           .fan-sec *{transition-duration:.01ms!important;animation-duration:.01ms!important}
           .fan.pre .fcard{transform:translateX(-50%) rotate(var(--a));opacity:1}
           .fan-sec .pat{animation:none}
+        }
+        @media(min-width:1024px){
+          .fan{max-width:1060px}
+          .fcard:nth-child(1){--a:-18deg}
+          .fcard:nth-child(2){--a:-6deg}
+          .fcard:nth-child(3){--a:6deg}
+          .fcard:nth-child(4){--a:18deg}
+        }
+        @media(min-width:1440px){
+          .lb-panel{max-width:920px}
         }
       `}</style>
     </>
