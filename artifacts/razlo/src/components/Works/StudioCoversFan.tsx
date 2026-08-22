@@ -6,13 +6,13 @@ const COVERS = [
   {
     id: 1,
     title: 'Queen of Dawn',
-    category: 'Franchise Cover',
+    category: 'Unmade Franchise Cover',
     image: 'https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786785376/file_00000000a0dc71f4a74b40b4cd6102a9_helsph.png',
   },
   {
     id: 2,
     title: 'Shadow Slave',
-    category: 'Novel Cover',
+    category: 'Fan-Art Cover',
     image: 'https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786785344/file_000000001408720a9863b53a9ed83b51_yqjlpn.png',
   },
   {
@@ -30,13 +30,13 @@ const COVERS = [
   {
     id: 5,
     title: 'Shadow Slave',
-    category: 'Novel Cover',
+    category: 'Fan-Art Cover',
     image: 'https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786785375/file_0000000006ec71f49ecefccd3c3e96d3_lr3kz3.png',
   },
   {
     id: 6,
     title: 'Split',
-    category: 'Franchise Cover',
+    category: 'Unmade Franchise Cover',
     image: 'https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786785334/file_00000000561c71f490506870429048f0_geaybe.png',
   },
   {
@@ -48,7 +48,7 @@ const COVERS = [
   {
     id: 8,
     title: 'Queen of Dawn',
-    category: 'Franchise Cover',
+    category: 'Unmade Franchise Cover',
     image: 'https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786785303/file_0000000032047243b1cb90ce317b8b06_amrqgg.png',
   },
   {
