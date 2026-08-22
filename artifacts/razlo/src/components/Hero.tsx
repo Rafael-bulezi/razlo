@@ -344,7 +344,7 @@ export default function Hero() {
               <span className="art a-photo">
                 <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786928216/ChatGPT_Image_Aug_17_2026_01_56_33_AM_wrbekd.png" alt="Reflecting the Glory of GOD film cover" priority />
                 <span className="lab">Film — Glory of GOD</span>
-                <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
+                <span className="hero-card-action" aria-hidden="true"><ArrowUpRight size={18} strokeWidth={1.8} /></span>
               </span>
             </span>
           </button>
@@ -353,7 +353,7 @@ export default function Hero() {
               <span className="art a-photo">
                 <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1772994247/veloria-git-main-rafael-bulezis-projects.vercel.app__sycozm.webp" alt="Veloria web experience" />
                 <span className="lab">Veloria — Digital Web</span>
-                <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
+                <span className="hero-card-action" aria-hidden="true"><ArrowUpRight size={18} strokeWidth={1.8} /></span>
               </span>
             </span>
           </button>
@@ -362,7 +362,7 @@ export default function Hero() {
               <span className="art a-photo">
                 <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786787274/ChatGPT_Image_Aug_15_2026_10_47_35_AM_balt1e.png" alt="Love Is Selfless visual film" />
                 <span className="lab">Love Is Selfless — Motion</span>
-                <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
+                <span className="hero-card-action" aria-hidden="true"><ArrowUpRight size={18} strokeWidth={1.8} /></span>
               </span>
             </span>
           </button>
@@ -371,7 +371,7 @@ export default function Hero() {
               <span className="art a-photo">
                 <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786787790/ChatGPT_Image_Aug_15_2026_10_56_05_AM_kpwsvf.png" alt="Christ Is Love" />
                 <span className="lab">Film — Christ Is Love</span>
-                <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
+                <span className="hero-card-action" aria-hidden="true"><ArrowUpRight size={18} strokeWidth={1.8} /></span>
               </span>
             </span>
           </button>
@@ -380,7 +380,7 @@ export default function Hero() {
               <span className="art a-photo">
                 <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1773073079/Whisk_c451e4d9353ac399ab1438a486573712dr_d8hsrf.jpg" alt="Law and Order film" />
                 <span className="lab">Film — Law and Order</span>
-                <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
+                <span className="hero-card-action" aria-hidden="true"><ArrowUpRight size={18} strokeWidth={1.8} /></span>
               </span>
             </span>
           </button>
@@ -389,7 +389,7 @@ export default function Hero() {
               <span className="art a-photo">
                 <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786786663/livestream_clip_about_my_bussiness._b9zd12.png" alt="My Past Business documentary" />
                 <span className="lab">Doc — My Past Business</span>
-                <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
+                <span className="hero-card-action" aria-hidden="true"><ArrowUpRight size={18} strokeWidth={1.8} /></span>
               </span>
             </span>
           </button>
@@ -398,7 +398,7 @@ export default function Hero() {
               <span className="art a-photo">
                 <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786930828/ChatGPT_Image_Aug_17_2026_02_40_16_AM_hmqthr.png" alt="Dr Jimmy trailer" />
                 <span className="lab">Documentary — Dr Jimmy</span>
-                <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
+                <span className="hero-card-action" aria-hidden="true"><ArrowUpRight size={18} strokeWidth={1.8} /></span>
               </span>
             </span>
           </button>
@@ -407,7 +407,7 @@ export default function Hero() {
               <span className="art a-photo">
                 <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/q_auto,f_auto,w_1920/v1777219417/cakes-do-owi.vercel.app__4_jbu6ft.webp" alt="Cakes do Owi platform" />
                 <span className="lab">Cakes do Owi — Boutique Web</span>
-                <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
+                <span className="hero-card-action" aria-hidden="true"><ArrowUpRight size={18} strokeWidth={1.8} /></span>
               </span>
             </span>
           </button>
@@ -463,20 +463,25 @@ export default function Hero() {
 
           /* Hero Card Action Button on Expanded Card */
           .hero-card-action{
-            position:absolute;right:10px;bottom:10px;z-index:10;
-            display:inline-flex;align-items:center;gap:4px;
-            padding:6px 12px;border-radius:999px;
-            font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
-            color:#FFF;background:rgba(177,93,46,.85);backdrop-filter:blur(8px);
-            box-shadow:0 4px 14px rgba(0,0,0,.3);opacity:0;pointer-events:none;
-            transform:translateY(6px);transition:all .3s ease;
+            position:absolute;right:12px;bottom:12px;z-index:10;
+            display:grid;place-items:center;width:42px;height:42px;border-radius:999px;
+            color:#1B120E;border:1px solid rgba(255,255,255,.78);
+            background:
+              linear-gradient(135deg,rgba(255,255,255,.82),rgba(255,242,232,.30)) padding-box,
+              linear-gradient(135deg,rgba(255,255,255,.96),rgba(255,182,146,.45)) border-box;
+            backdrop-filter:blur(14px) saturate(155%);-webkit-backdrop-filter:blur(14px) saturate(155%);
+            box-shadow:0 10px 24px rgba(16,12,8,.24),inset 0 1px 0 rgba(255,255,255,.9),inset 0 -1px 0 rgba(177,93,46,.12);
+            opacity:0;pointer-events:none;transform:translateY(8px) scale(.9);transition:opacity .3s ease,transform .35s cubic-bezier(.22,1,.3,1),box-shadow .3s ease;
           }
+          .hero-card-action::before{content:"";position:absolute;top:15%;left:19%;width:45%;height:30%;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(255,255,255,0));filter:blur(1px);pointer-events:none}
+          .hero-card-action svg{position:relative;filter:drop-shadow(0 1px 1px rgba(255,255,255,.65))}
           .card.expanded .hero-card-action{
-            opacity:1;pointer-events:auto;transform:translateY(0);
+            opacity:1;pointer-events:auto;transform:translateY(0) scale(1);
           }
           .hero-card-action:hover{
-            background:#B15D2E;transform:scale(1.05);
+            transform:translateY(-2px) scale(1.06);box-shadow:0 14px 30px rgba(16,12,8,.30),inset 0 1px 0 rgba(255,255,255,.95);
           }
+          @media(max-width:640px){.hero-card-action{width:46px;height:46px;right:11px;bottom:11px}}
 
           .veil{position:absolute;inset:0;background:rgba(14,14,14,.22);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .5s;z-index:15}
           .veil.on{opacity:1;pointer-events:auto}

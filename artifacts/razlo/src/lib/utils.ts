@@ -32,6 +32,22 @@ export function cloudinarySrcSet(
   return widths.map((width) => `${optimizeCloudinaryUrl(url, width)} ${width}w`).join(', ');
 }
 
+export const optimizeCloudinaryVideoUrl = (url: string, width: number = 1280): string => {
+  if (!url || !url.includes('cloudinary.com') || !url.includes('/video/upload/')) return url;
+
+  const cleanUrl = url.split('?')[0];
+  const [before, after] = cleanUrl.split('/video/upload/');
+  const segments = after.split('/');
+  const versionIndex = segments.findIndex((segment) => /^v\d+$/.test(segment));
+  const transformations = `f_auto,q_auto:good,vc_auto,w_${width},c_limit`;
+
+  if (versionIndex === -1) return `${before}/video/upload/${transformations}/${after}`;
+
+  const existingTransforms = segments.slice(0, versionIndex).filter(Boolean);
+  const resource = segments.slice(versionIndex).join('/');
+  return `${before}/video/upload/${[...existingTransforms, transformations].join('/')}/${resource}`;
+};
+
 export const SIZES = {
   thumbnail: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px',
   grid: '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px',

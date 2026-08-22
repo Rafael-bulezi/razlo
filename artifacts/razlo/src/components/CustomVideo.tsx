@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { cn, optimizeCloudinaryUrl, optimizeCloudinaryVideoUrl } from '../lib/utils';
 
 interface CustomVideoProps {
   src: string;
@@ -9,6 +9,7 @@ interface CustomVideoProps {
   autoPlay?: boolean;
   loop?: boolean;
   muted?: boolean;
+  preload?: 'none' | 'metadata' | 'auto';
 }
 
 const CustomVideo: React.FC<CustomVideoProps> = ({
@@ -18,7 +19,10 @@ const CustomVideo: React.FC<CustomVideoProps> = ({
   autoPlay = false,
   loop = true,
   muted = false,
+  preload = 'metadata',
 }) => {
+  const optimizedSrc = optimizeCloudinaryVideoUrl(src);
+  const optimizedPoster = poster ? optimizeCloudinaryUrl(poster, 1280) : undefined;
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(autoPlay);
   const [isMuted, setIsMuted] = useState(muted);
@@ -71,8 +75,9 @@ const CustomVideo: React.FC<CustomVideoProps> = ({
     >
       <video
         ref={videoRef}
-        src={src}
-        poster={poster}
+        src={optimizedSrc}
+        poster={optimizedPoster}
+        preload={preload}
         autoPlay={autoPlay}
         loop={loop}
         muted={isMuted}

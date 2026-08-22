@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import { useCurtain } from './Curtain';
 import MediaCarousel from './MediaCarousel';
 import { PROJECTS, isGoogleDriveUrl, convertToGoogleDriveEmbed, isYouTubeUrl, convertToYouTubeEmbed } from '../data/projects';
-import { cloudinarySrcSet, optimizeCloudinaryUrl, SIZES } from '../lib/utils';
+import { cloudinarySrcSet, optimizeCloudinaryUrl, optimizeCloudinaryVideoUrl, SIZES } from '../lib/utils';
 
 /* per-index art direction for the fan blades */
 const FOCALS = ['50% 45%', '70% 40%', '30% 60%', '40% 70%'];
@@ -170,7 +170,13 @@ export default function Projects() {
                       />
                     </div>
                   ) : (
-                    <video controls playsInline poster={active.image} src={active.videoUrl} />
+                    <video
+                      controls
+                      playsInline
+                      preload="metadata"
+                      poster={optimizeCloudinaryUrl(active.image, 1280)}
+                      src={optimizeCloudinaryVideoUrl(active.videoUrl)}
+                    />
                   )
                 ) : active.gallery && active.gallery.length > 0 ? (
                   <MediaCarousel images={active.gallery} className="w-full max-h-[60svh] aspect-[16/10]" />
