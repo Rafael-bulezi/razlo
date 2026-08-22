@@ -481,7 +481,14 @@ export default function Hero() {
           .hero-card-action:hover{
             transform:translateY(-2px) scale(1.06);box-shadow:0 14px 30px rgba(16,12,8,.30),inset 0 1px 0 rgba(255,255,255,.95);
           }
-          @media(max-width:640px){.hero-card-action{width:46px;height:46px;right:11px;bottom:11px}}
+          @media(min-width:641px) and (max-width:1023px){
+            .hero-card-action{width:32px;height:32px;right:10px;bottom:10px}
+            .hero-card-action svg{width:14px;height:14px}
+          }
+          @media(max-width:640px){
+            .hero-card-action{width:20px;height:20px;right:8px;bottom:8px;backdrop-filter:blur(10px) saturate(145%);-webkit-backdrop-filter:blur(10px) saturate(145%);box-shadow:0 5px 13px rgba(16,12,8,.24),inset 0 1px 0 rgba(255,255,255,.9)}
+            .hero-card-action svg{width:11px;height:11px}
+          }
 
           .veil{position:absolute;inset:0;background:rgba(14,14,14,.22);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .5s;z-index:15}
           .veil.on{opacity:1;pointer-events:auto}
