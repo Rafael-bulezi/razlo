@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import { AnimatePresence } from 'motion/react';
 import { PROJECTS } from '../data/projects';
 import { Project } from '../types/project';
@@ -10,12 +10,12 @@ const SERVICES = ['Web design', 'Video editing', 'Graphic design', 'App developm
 
 const HERO_CARD_PROJECT_IDS = ['02', '01', '06', '08', '13', '04', '03', '09'];
 
-function HeroImage({ src, alt, priority = false }: { src: string; alt: string; priority?: boolean }) {
+function HeroImage({ src, alt, priority = false, sizes = SIZES.heroCard }: { src: string; alt: string; priority?: boolean; sizes?: string }) {
   return (
     <img
 src={optimizeProjectImage(src, 640)}
       srcSet={projectImageSrcSet(src) || undefined}
-      sizes={SIZES.heroCard}
+      sizes={sizes}
       alt={alt}
       loading={priority ? 'eager' : 'lazy'}
       fetchPriority={priority ? 'high' : 'low'}
@@ -81,6 +81,21 @@ function OfferBar() {
 export default function Hero() {
   const secRef = useRef<HTMLElement | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [previewProject, setPreviewProject] = useState<Project | null>(null);
+
+  useEffect(() => {
+    if (!previewProject) return;
+    const previousOverflow = document.documentElement.style.overflow;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setPreviewProject(null);
+    };
+    document.documentElement.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.documentElement.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [previewProject]);
 
   useEffect(() => {
     const sec = secRef.current;
@@ -89,7 +104,7 @@ export default function Hero() {
     const stage = sec.querySelector<HTMLElement>('.stage')!;
     const intro = sec.querySelector<HTMLElement>('#intro')!;
     const lede = sec.querySelector<HTMLElement>('#lede');
-    const veil = sec.querySelector<HTMLElement>('#veil')!;
+
     const words = Array.from(sec.querySelectorAll<HTMLElement>('.w'));
     const cards = Array.from(sec.querySelectorAll<HTMLElement>('.card'));
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -119,7 +134,7 @@ export default function Hero() {
 
     let H = sec.offsetHeight;
     let target = 0, cur = 0, win = 0, raf = 0;
-    let expandedEl: HTMLElement | null = null;
+
     let dragOff = 0, dragTarget = 0, dragging = false, moved = false;
     let dragId: number | null = null, sx = 0, sy = 0, startDrag = 0;
     let railOn = false, lastBase = 0, drift = 0;
@@ -194,68 +209,26 @@ export default function Hero() {
         for (let q = 0; q < 5; q++) s[q] += (T[q] - s[q]) * kC;
         (el as any)._t = `translate3d(calc(${s[0]}vw - 50%), calc(${s[1]}vh - 50%), 0) rotate(${s[2]}deg) scale(${s[3]})`;
         (el as any)._o = s[4];
-        if (el.classList.contains('expanded')) return;
+
         el.style.transform = (el as any)._t;
         el.style.opacity = String(s[4]);
       });
     }
 
-    /* ---- expansion ---- */
-    function collapse() {
-      if (!expandedEl) return;
-      const el = expandedEl; expandedEl = null;
-      veil.classList.remove('on');
-      el.style.transform = (el as any)._t;
-      el.style.opacity = String((el as any)._o);
-      const done = (e?: TransitionEvent) => {
-        if (e && e.propertyName !== 'transform') return;
-        el.classList.remove('anim', 'expanded');
-        el.removeEventListener('transitionend', done as EventListener);
-      };
-      el.addEventListener('transitionend', done as EventListener);
-      setTimeout(() => done(), 900);
-    }
-    function expand(el: HTMLElement) {
-      if (expandedEl) collapse();
-      const rect = el.getBoundingClientRect();
-      const W = Math.min(innerWidth * .86, 640);
-      const s = Math.min(W / rect.width, (innerHeight * .68) / rect.height, 3.5);
-      el.classList.add('anim', 'expanded');
-      veil.classList.add('on');
-      el.style.transform = `translate3d(calc(${innerWidth / 2}px - 50%), calc(${innerHeight / 2}px - 50%), 0) rotate(0deg) scale(${s})`;
-      el.style.opacity = '1';
-      expandedEl = el;
-    }
+
 
     const clickers = cards.map((c, idx) => {
-      const fn = (e: MouseEvent) => {
-        // If clicking the action button inside expanded card, open modal
-        if ((e.target as HTMLElement)?.closest('.hero-card-action')) {
-          const projId = HERO_CARD_PROJECT_IDS[idx];
-          const proj = PROJECTS.find((p) => p.id === projId);
-          if (proj) {
-            collapse();
-            setSelectedProject(proj);
-          }
-          return;
-        }
-        if (expandedEl === c) {
-          collapse();
-        } else {
-          expand(c);
-        }
+      const fn = () => {
+        const project = PROJECTS.find((item) => item.id === HERO_CARD_PROJECT_IDS[idx]);
+        if (project) setPreviewProject(project);
       };
       c.addEventListener('click', fn);
       return fn;
     });
-    const onVeil = () => collapse();
-    veil.addEventListener('click', onVeil);
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && collapse();
-    addEventListener('keydown', onKey);
 
     /* ---- swipe ---- */
     const onDown = (e: PointerEvent) => {
-      if (!railOn || expandedEl) return;
+      if (!railOn) return;
       dragId = e.pointerId; sx = e.clientX; sy = e.clientY; moved = false; dragging = false; startDrag = dragTarget;
     };
     const onMove = (e: PointerEvent) => {
@@ -276,10 +249,10 @@ export default function Hero() {
 
     /* ---- 8s carousel at rest ---- */
     const iv = setInterval(() => {
-      if (cur < .05 && !expandedEl && !document.hidden) win = (win + 1) % N;
+      if (cur < .05 && !document.hidden) win = (win + 1) % N;
     }, 8000);
 
-    const onResize = () => { H = sec.offsetHeight; collapse(); };
+    const onResize = () => { H = sec.offsetHeight; };
     addEventListener('resize', onResize, { passive: true });
     const onScroll = () => { target = clamp(scrollY / (H - innerHeight), 0, 1); };
     addEventListener('scroll', onScroll, { passive: true });
@@ -293,7 +266,7 @@ export default function Hero() {
         const dt = Math.min(50, now - last); last = now;
         cur += (target - cur) * kFor(.001, dt);
         railOn = seg(cur, .46, .62) > .55;
-        if (railOn && !dragging && !expandedEl && !document.hidden) {
+        if (railOn && !dragging && !document.hidden) {
           drift = Math.min(RAIL_MAX, drift + dt * 0.0012);
         }
         dragOff += (dragTarget - dragOff) * kFor(.0001, dt);
@@ -306,10 +279,10 @@ export default function Hero() {
     return () => {
       cancelAnimationFrame(raf);
       clearInterval(iv);
-      removeEventListener('keydown', onKey);
+
       removeEventListener('resize', onResize);
       removeEventListener('scroll', onScroll);
-      veil.removeEventListener('click', onVeil);
+
       stage.removeEventListener('pointerdown', onDown);
       stage.removeEventListener('pointermove', onMove);
       stage.removeEventListener('pointerup', onUp);
@@ -459,7 +432,7 @@ export default function Hero() {
           .art{display:block;width:100%;height:100%;position:relative;overflow:hidden;background:#fff;border-radius:1.15rem}
           .lab{position:absolute;font-size:8px;font-weight:700;letter-spacing:.22em;color:rgba(14,14,14,.5);text-transform:uppercase}
           .a-photo img{width:100%;height:100%;object-fit:cover;display:block}
-          .a-photo .lab{left:12px;bottom:10px;color:rgba(245,243,239,.85);text-shadow:0 1px 8px rgba(0,0,0,.6)}
+          .a-photo .lab,.hero-card-action{display:none!important}
 
           /* Hero Card Action Button on Expanded Card */
           .hero-card-action{
@@ -490,8 +463,20 @@ export default function Hero() {
             .hero-card-action svg{width:11px;height:11px}
           }
 
-          .veil{position:absolute;inset:0;background:rgba(14,14,14,.22);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .5s;z-index:15}
-          .veil.on{opacity:1;pointer-events:auto}
+          .hero-preview{position:fixed;inset:0;z-index:120;display:grid;place-items:center;padding:clamp(14px,4vw,36px);isolation:isolate}
+          .hero-preview-veil{position:absolute;inset:0;border:0;background:rgba(15,12,10,.50);backdrop-filter:blur(11px) saturate(.8);-webkit-backdrop-filter:blur(11px) saturate(.8);cursor:zoom-out}
+          .hero-preview-panel{position:relative;z-index:1;width:min(90vw,520px);max-height:calc(100svh - 28px);display:flex;flex-direction:column;align-items:center;gap:12px;animation:heroPreviewIn .38s cubic-bezier(.22,1,.3,1);pointer-events:auto}
+          @keyframes heroPreviewIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+          .hero-preview-cover{width:min(88vw,420px);max-height:min(66svh,650px);aspect-ratio:4/5;overflow:hidden;border-radius:1.35rem;background:#17120f;box-shadow:0 28px 70px rgba(0,0,0,.34);border:1px solid rgba(255,255,255,.48)}
+          .hero-preview-cover img{display:block;width:100%;height:100%;object-fit:contain;background:#17120f}
+          .hero-preview-meta{width:min(88vw,420px);display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 2px;color:#F8F4EC}
+          .hero-preview-meta p{margin:0 0 4px;font-size:8px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:rgba(248,244,236,.68)}
+          .hero-preview-meta h2{margin:0;font-family:"Noto Serif",serif;font-size:clamp(1.1rem,4.5vw,1.45rem);font-weight:500;line-height:1.06;letter-spacing:-.03em}
+          .hero-preview-open{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.72);border-radius:999px;padding:10px 12px 10px 15px;background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,239,226,.42));color:#1A120E;box-shadow:0 10px 24px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.94);font-family:"Space Grotesk",sans-serif;font-size:9px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;cursor:pointer;transition:transform .25s ease,box-shadow .25s ease}
+          .hero-preview-open:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.96)}
+          .hero-preview-close{position:absolute;z-index:2;top:10px;right:max(-2px,calc((100% - min(88vw,420px))/2));display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(255,255,255,.78);border-radius:999px;background:rgba(20,15,12,.48);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;cursor:pointer}
+          @media(max-width:420px){.hero-preview-open span{display:none}.hero-preview-open{padding:11px}.hero-preview-meta{gap:10px}.hero-preview-cover{max-height:63svh}}
+          @media(min-width:641px){.hero-preview-panel{width:min(72vw,560px);gap:15px}.hero-preview-cover{width:min(44vw,440px);max-height:70svh}.hero-preview-meta{width:min(44vw,440px)}}
           .cta{position:absolute;left:50%;bottom:80px;transform:translateX(-50%);z-index:6;text-decoration:none;color:var(--ink);font-size:clamp(10px,2.6vw,12px);font-weight:600;letter-spacing:.26em;padding-bottom:8px;border-bottom:1px solid rgba(14,14,14,.4);display:inline-flex;gap:10px;align-items:center;white-space:nowrap}
           .cta s{text-decoration:none;color:var(--copper);transition:transform .4s}
           .cta:hover s{transform:translateX(6px)}
@@ -554,6 +539,40 @@ export default function Hero() {
           }
         `}</style>
       </section>
+
+      <AnimatePresence>
+        {previewProject && (
+          <div className="hero-preview" role="dialog" aria-modal="true" aria-label={`${previewProject.title} project preview`}>
+            <button className="hero-preview-veil" type="button" aria-label="Close project preview" onClick={() => setPreviewProject(null)} />
+            <article className="hero-preview-panel">
+              <button className="hero-preview-close" type="button" aria-label="Close project preview" onClick={() => setPreviewProject(null)}>
+                <X size={16} strokeWidth={1.8} />
+              </button>
+              <div className="hero-preview-cover">
+                <HeroImage src={previewProject.image} alt={`${previewProject.title} cover`} priority sizes="(max-width: 640px) min(88vw, 420px), min(46vw, 520px)" />
+              </div>
+              <div className="hero-preview-meta">
+                <div>
+                  <p>{previewProject.category} · {previewProject.year}</p>
+                  <h2>{previewProject.title}</h2>
+                </div>
+                <button
+                  type="button"
+                  className="hero-preview-open"
+                  aria-label={`Open ${previewProject.title} project details`}
+                  onClick={() => {
+                    setPreviewProject(null);
+                    setSelectedProject(previewProject);
+                  }}
+                >
+                  <span>View project</span>
+                  <ArrowUpRight size={17} strokeWidth={1.8} />
+                </button>
+              </div>
+            </article>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Project Detail Modal */}
       <AnimatePresence>
