@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, X } from 'lucide-react';
 import { useCurtain } from './Curtain';
 import MediaCarousel from './MediaCarousel';
 import { PROJECTS, isGoogleDriveUrl, convertToGoogleDriveEmbed, isYouTubeUrl, convertToYouTubeEmbed } from '../data/projects';
-import { cloudinarySrcSet, optimizeCloudinaryUrl, optimizeCloudinaryVideoUrl, SIZES } from '../lib/utils';
+import { optimizeProjectImage, projectImageSrcSet, optimizeCloudinaryVideoUrl, SIZES } from '../lib/utils';
 
 /* per-index art direction for the fan blades */
 const FOCALS = ['50% 45%', '70% 40%', '30% 60%', '40% 70%'];
@@ -107,8 +107,8 @@ export default function Projects() {
                 onClick={() => setOpenIdx(i)}
               >
                 <img
-                  src={optimizeCloudinaryUrl(p.image, 480)}
-                  srcSet={cloudinarySrcSet(p.image, [240, 360, 480, 640]) || undefined}
+                  src={optimizeProjectImage(p.image, 480)}
+                  srcSet={projectImageSrcSet(p.image) || undefined}
                   sizes={SIZES.fanCard}
                   alt={`${p.title} — featured project`}
                   loading="lazy"
@@ -174,7 +174,7 @@ export default function Projects() {
                       controls
                       playsInline
                       preload="metadata"
-                      poster={optimizeCloudinaryUrl(active.image, 1280)}
+                      poster={optimizeProjectImage(active.image, 1200)}
                       src={optimizeCloudinaryVideoUrl(active.videoUrl)}
                     />
                   )

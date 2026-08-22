@@ -32,6 +32,25 @@ export function cloudinarySrcSet(
   return widths.map((width) => `${optimizeCloudinaryUrl(url, width)} ${width}w`).join(', ');
 }
 
+const EDITION_COVER_PATTERN = /^(\/covers\/.+)-(480|800|1200)\.webp$/;
+
+export function optimizeProjectImage(url: string, width: number = 1200): string {
+  const match = url.match(EDITION_COVER_PATTERN);
+  if (match) {
+    const target = width <= 480 ? 480 : width <= 800 ? 800 : 1200;
+    return `${match[1]}-${target}.webp`;
+  }
+  return optimizeCloudinaryUrl(url, width);
+}
+
+export function projectImageSrcSet(url: string): string {
+  const match = url.match(EDITION_COVER_PATTERN);
+  if (match) {
+    return [480, 800, 1200].map((width) => `${match[1]}-${width}.webp ${width}w`).join(', ');
+  }
+  return cloudinarySrcSet(url);
+}
+
 export const optimizeCloudinaryVideoUrl = (url: string, width: number = 1280): string => {
   if (!url || !url.includes('cloudinary.com') || !url.includes('/video/upload/')) return url;
 
