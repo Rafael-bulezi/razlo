@@ -4,10 +4,25 @@ import { AnimatePresence } from 'motion/react';
 import { PROJECTS } from '../data/projects';
 import { Project } from '../types/project';
 import ProjectDetail from './Works/ProjectDetail';
+import { cloudinarySrcSet, optimizeCloudinaryUrl, SIZES } from '../lib/utils';
 
 const SERVICES = ['Web design', 'Video editing', 'Graphic design', 'App development', 'Brand identity', 'Motion'];
 
 const HERO_CARD_PROJECT_IDS = ['02', '01', '06', '08', '13', '04', '03', '09'];
+
+function HeroImage({ src, alt, priority = false }: { src: string; alt: string; priority?: boolean }) {
+  return (
+    <img
+      src={optimizeCloudinaryUrl(src, 640)}
+      srcSet={cloudinarySrcSet(src, [320, 480, 640, 800]) || undefined}
+      sizes={SIZES.heroCard}
+      alt={alt}
+      loading={priority ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : 'low'}
+      decoding="async"
+    />
+  );
+}
 
 function OfferBar() {
   const [text, setText] = useState(SERVICES[0]);
@@ -327,7 +342,7 @@ export default function Hero() {
           <button type="button" className="card" aria-label="Reflecting the Glory of GOD film — tap to expand">
             <span className="float">
               <span className="art a-photo">
-                <img src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786928216/ChatGPT_Image_Aug_17_2026_01_56_33_AM_wrbekd.png" alt="Reflecting the Glory of GOD film cover" />
+                <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786928216/ChatGPT_Image_Aug_17_2026_01_56_33_AM_wrbekd.png" alt="Reflecting the Glory of GOD film cover" priority />
                 <span className="lab">Film — Glory of GOD</span>
                 <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
               </span>
@@ -336,7 +351,7 @@ export default function Hero() {
           <button type="button" className="card" aria-label="Veloria fine dining web — tap to expand">
             <span className="float">
               <span className="art a-photo">
-                <img src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1772994247/veloria-git-main-rafael-bulezis-projects.vercel.app__sycozm.webp" alt="Veloria web experience" />
+                <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1772994247/veloria-git-main-rafael-bulezis-projects.vercel.app__sycozm.webp" alt="Veloria web experience" />
                 <span className="lab">Veloria — Digital Web</span>
                 <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
               </span>
@@ -345,7 +360,7 @@ export default function Hero() {
           <button type="button" className="card" aria-label="Love Is Selfless project — tap to expand">
             <span className="float">
               <span className="art a-photo">
-                <img src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786787274/ChatGPT_Image_Aug_15_2026_10_47_35_AM_balt1e.png" alt="Love Is Selfless visual film" />
+                <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786787274/ChatGPT_Image_Aug_15_2026_10_47_35_AM_balt1e.png" alt="Love Is Selfless visual film" />
                 <span className="lab">Love Is Selfless — Motion</span>
                 <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
               </span>
@@ -354,7 +369,7 @@ export default function Hero() {
           <button type="button" className="card" aria-label="Christ Is Love cinematic piece — tap to expand">
             <span className="float">
               <span className="art a-photo">
-                <img src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786787790/ChatGPT_Image_Aug_15_2026_10_56_05_AM_kpwsvf.png" alt="Christ Is Love" />
+                <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786787790/ChatGPT_Image_Aug_15_2026_10_56_05_AM_kpwsvf.png" alt="Christ Is Love" />
                 <span className="lab">Film — Christ Is Love</span>
                 <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
               </span>
@@ -363,7 +378,7 @@ export default function Hero() {
           <button type="button" className="card" aria-label="Law and Order film — tap to expand">
             <span className="float">
               <span className="art a-photo">
-                <img src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1773073079/Whisk_c451e4d9353ac399ab1438a486573712dr_d8hsrf.jpg" alt="Law and Order film" />
+                <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1773073079/Whisk_c451e4d9353ac399ab1438a486573712dr_d8hsrf.jpg" alt="Law and Order film" />
                 <span className="lab">Film — Law and Order</span>
                 <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
               </span>
@@ -372,7 +387,7 @@ export default function Hero() {
           <button type="button" className="card" aria-label="My Past Business documentary — tap to expand">
             <span className="float">
               <span className="art a-photo">
-                <img src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786786663/livestream_clip_about_my_bussiness._b9zd12.png" alt="My Past Business documentary" />
+                <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786786663/livestream_clip_about_my_bussiness._b9zd12.png" alt="My Past Business documentary" />
                 <span className="lab">Doc — My Past Business</span>
                 <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
               </span>
@@ -381,7 +396,7 @@ export default function Hero() {
           <button type="button" className="card" aria-label="Dr Jimmy documentary — tap to expand">
             <span className="float">
               <span className="art a-photo">
-                <img src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786930828/ChatGPT_Image_Aug_17_2026_02_40_16_AM_hmqthr.png" alt="Dr Jimmy trailer" />
+                <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/v1786930828/ChatGPT_Image_Aug_17_2026_02_40_16_AM_hmqthr.png" alt="Dr Jimmy trailer" />
                 <span className="lab">Documentary — Dr Jimmy</span>
                 <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
               </span>
@@ -390,7 +405,7 @@ export default function Hero() {
           <button type="button" className="card" aria-label="Cakes do Owi boutique shop — tap to expand">
             <span className="float">
               <span className="art a-photo">
-                <img src="https://res.cloudinary.com/dv9jpkgrs/image/upload/q_auto,f_auto,w_1920/v1777219417/cakes-do-owi.vercel.app__4_jbu6ft.webp" alt="Cakes do Owi platform" />
+                <HeroImage src="https://res.cloudinary.com/dv9jpkgrs/image/upload/q_auto,f_auto,w_1920/v1777219417/cakes-do-owi.vercel.app__4_jbu6ft.webp" alt="Cakes do Owi platform" />
                 <span className="lab">Cakes do Owi — Boutique Web</span>
                 <span className="hero-card-action">View Project <ArrowUpRight size={10} /></span>
               </span>
@@ -543,4 +558,4 @@ export default function Hero() {
       </AnimatePresence>
     </>
   );
-}
+}
